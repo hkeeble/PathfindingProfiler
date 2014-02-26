@@ -23,17 +23,27 @@ namespace Pathfinder
 
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        const string title = "Pathfinding Profiler v1.0";
+        const string title           = "Pathfinding Profiler v1.0";
+        const string textBoxTitle    = "Current map: ";
+        const string algorithmsTitle = "Choose an algorithm: ";
 
         SpriteBatch spriteBatch;
         List<Button> buttons;
 
+        // Text box
+        TextBox textBox;
+
         // Unecapsulated resources
         Texture2D backgroundTexture;
         SpriteFont titleFont;
+        SpriteFont subTitleFont;
 
         // Title position
         Vector2 titlePos;
+
+        // Other text positions
+        Vector2 textBoxTitlePos;
+        Vector2 algorithmsTitlePos;
 
         // The currently loaded map
         Map currentMap;
@@ -50,22 +60,35 @@ namespace Pathfinder
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load Content
-            titleFont               = Game.Content.Load<SpriteFont>("MenuTitleFont");
-            backgroundTexture       = Game.Content.Load<Texture2D>("menuBack");
-            Texture2D buttonTexture = Game.Content.Load<Texture2D>("button");
-            SpriteFont buttonFont   = Game.Content.Load<SpriteFont>("MenuButtonFont");
+            titleFont                = Game.Content.Load<SpriteFont>("Fonts/MenuTitleFont");
+            subTitleFont             = Game.Content.Load<SpriteFont>("Fonts/MenuSubTitleFont");
+            SpriteFont buttonFont    = Game.Content.Load<SpriteFont>("Fonts/MenuButtonFont");
+            backgroundTexture        = Game.Content.Load<Texture2D> ("Images/menuBack");
+            Texture2D buttonTexture  = Game.Content.Load<Texture2D> ("Images/button");
+            Texture2D textBoxTexture = Game.Content.Load<Texture2D> ("Images/textbox");
 
+            // Useful values for positioning
             float centerX = Game.Window.ClientBounds.Width / 2;
             float quarterX = Game.Window.ClientBounds.Width / 4;
 
-            // Create Buttons
+            // Create Algorithm Buttons
             buttons = new List<Button>();
-            buttons.Add(new Button(new Vector2(quarterX - 75, 200), new Vector2(150, 50), buttonTexture, "Dijkstra", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenDijkstra));
-            buttons.Add(new Button(new Vector2(quarterX - 75, 300), new Vector2(150, 70), buttonTexture, "A Star", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenAStar));
-            buttons.Add(new Button(new Vector2(quarterX - 75, 400), new Vector2(150, 70), buttonTexture, "  Scent\nAlgorithm", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenScentAlgorithm));
+            buttons.Add(new Button(new Vector2(quarterX - 75, 250), new Vector2(150, 50), buttonTexture, "Dijkstra", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenDijkstra));
+            buttons.Add(new Button(new Vector2(quarterX - 75, 350), new Vector2(150, 70), buttonTexture, "A Star", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenAStar));
+            buttons.Add(new Button(new Vector2(quarterX - 75, 450), new Vector2(150, 70), buttonTexture, "  Scent\nAlgorithm", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenScentAlgorithm));
+
+            // Create Textbox
+            Vector2 textBoxPos = new Vector2(70, 120);
+            Vector2 textBoxDims = new Vector2(350, 50);
+            textBox = new TextBox(textBoxPos, textBoxDims, textBoxTexture, "", buttonFont, Color.Black);
+
+            // Create load map button
+            buttons.Add(new Button(new Vector2(textBoxPos.X + textBoxDims.X, textBoxPos.Y), new Vector2(100, textBoxDims.Y), buttonTexture, "Load", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenMapFile));
 
             // Calculate positions
-            titlePos = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
+            titlePos           = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
+            textBoxTitlePos    = new Vector2(textBoxPos.X, textBoxPos.Y - subTitleFont.MeasureString(textBoxTitle).Y);
+            algorithmsTitlePos = new Vector2(textBoxTitlePos.X, textBoxTitlePos.Y + (textBoxDims.Y*2) + 5);
 
             base.LoadContent();
         }
@@ -86,29 +109,40 @@ namespace Pathfinder
                 {
                     if (b.Command == MenuCommand.OpenDijkstra || b.Command == MenuCommand.OpenAStar || b.Command == MenuCommand.OpenScentAlgorithm)
                     {
-
+                        LoadMap();
+                        if (b.Command == MenuCommand.OpenDijkstra)
+                            LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
+                        else if (b.Command == MenuCommand.OpenAStar)
+                            LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.AStar);
+                        else if (b.Command == MenuCommand.OpenScentAlgorithm)
+                            LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.ScentMap);
+                        else
+                        {
+                            Console.WriteLine("Menu.cs: Error, attempted to set unrecognized pathfinding algorithm. Defaulting to Dijkstra.");
+                            LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
+                        }
+                        Main.SetState(typeof(LevelHandler));
                     }
-
-                    switch (b.Command)
-                    {
-                        case MenuCommand.OpenMapFile:
-                            break;
-                        case MenuCommand.OpenDijkstra:
-                            if (currentMap == null) ShowNoMapError();
-                            break;
-                        case MenuCommand.OpenAStar:
-                            if (currentMap == null) ShowNoMapError();
-                            break;
-                        case MenuCommand.OpenScentAlgorithm:
-                            if (currentMap == null) ShowNoMapError();
-                            break;
-                        default:
-                            Console.WriteLine("Unrecognized menu button command called.\n");
-                            break;
-                    }
+                    else if (b.Command == MenuCommand.OpenMapFile)
+                        OpenMap();
+                    else
+                        Console.WriteLine("Unrecognized menu button command called.\n");
                 }
             }
+
             base.Update(gameTime);
+         }
+
+        private void LoadMap()
+        {
+            if (textBox.Text != "")
+            {
+                LevelHandler.SetMap("Content/Maps/" + textBox.Text);
+                LevelHandler.SetPlayerPosition(new Coord2(0, 0));
+                LevelHandler.SetBotPosition(new Coord2(10, 10));
+            }
+            else
+                ShowNoMapError();
         }
 
         private void ShowNoMapError()
@@ -120,12 +154,23 @@ namespace Pathfinder
         {
             spriteBatch.Begin();
             
+            // Draw background and title
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, Game.Window.ClientBounds.Width, Game.Window.ClientBounds.Height), Color.White);
             spriteBatch.DrawString(titleFont, title, titlePos, Color.Yellow);
 
+            // Draw text above textbox
+            spriteBatch.DrawString(subTitleFont, textBoxTitle, textBoxTitlePos, Color.Yellow);
+
+            // Draw text above buttons
+            spriteBatch.DrawString(subTitleFont, algorithmsTitle, algorithmsTitlePos, Color.Yellow);
+
+            // Draw Buttons
             foreach (Button b in buttons)
                 b.Draw(spriteBatch);
             
+            // Draw Text Box
+            textBox.Draw(spriteBatch);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -135,19 +180,19 @@ namespace Pathfinder
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Open Map File";
-            ofd.InitialDirectory = Directory.GetCurrentDirectory() + "\\content\\";
+            ofd.InitialDirectory = Directory.GetCurrentDirectory() + "\\content\\Maps\\";
             ofd.Filter = "Map Files (*.map)|*.map";
             ofd.ShowDialog();
 
             if (ofd.CheckFileExists)
             {
                 string fileName = ofd.SafeFileName;
-                
+                textBox.Text = fileName;
             }
             else
             {
                 MessageBox.Show("File not found.");
-                currentMap = null;
+                textBox.Text = "";
             }
         }
     }

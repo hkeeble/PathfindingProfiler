@@ -122,29 +122,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiBotBase.cs" />
+    <Compile Include="AiBotBlank.cs" />
     <Compile Include="Coord2.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="GameUtils.cs" />
     <Compile Include="InputHandler.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="LevelHandler.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="menu\Button.cs" />
     <Compile Include="menu\Menu.cs" />
+    <Compile Include="menu\TextMenuItem.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="OpenMap.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OpenMap.Designer.cs">
-      <DependentUpon>OpenMap.cs</DependentUpon>
-    </Compile>
     <Compile Include="pathfinders\AStar.cs" />
     <Compile Include="pathfinders\Dijkstra.cs" />
+    <Compile Include="pathfinders\Pathfinder.cs" />
     <Compile Include="pathfinders\ScentMap.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScentBot.cs" />
-    <Compile Include="TextBox.cs" />
+    <Compile Include="menu\TextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -200,11 +199,6 @@
       <Name>Pathfinder Workshop 1Content %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="OpenMap.resx">
-      <DependentUpon>OpenMap.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

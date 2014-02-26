@@ -7,13 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pathfinder
 {
-    class Button
+    class Button : TextMenuItem
     {
-        private Texture2D texture;
-        private string text;
-        private SpriteFont font;
-        private Rectangle screenRect;
-        private Vector2 textPos, textOrigin;
         private Color currentColor, defaultColor, hoverColor;
         private MenuCommand command;
         private bool pressed;
@@ -21,24 +16,18 @@ namespace Pathfinder
         const float hoverScalar = 1.2f;
 
         public Button(Vector2 position, Vector2 dimensions, Texture2D texture, string text, SpriteFont font, Color defaultColor, Color hoverColor, MenuCommand command)
+            : base(position, dimensions, texture, text, font)
         {
-            this.screenRect = new Rectangle((int)position.X, (int)position.Y, (int)dimensions.X, (int)dimensions.Y);
-            this.texture = texture;
-            this.text = text;
-            this.font = font;
-            this.defaultColor = defaultColor;
-            this.hoverColor = hoverColor;
-            this.currentColor = defaultColor;
-            this.command = command;
+            // Set parameters
+            this.defaultColor   = defaultColor;
+            this.hoverColor     = hoverColor;
+            this.currentColor   = defaultColor;
+            this.command        = command;
 
             pressed = false;
-
-            // Calculate text position and origin
-            textPos = new Vector2 (screenRect.X + (screenRect.Width / 2), screenRect.Y + (screenRect.Height / 2));
-            textOrigin = new Vector2(font.MeasureString(text).X / 2, font.MeasureString(text).Y / 2);
         }
 
-        public void Update()
+        public override void Update()
         {
             if (screenRect.Contains(InputHandler.MousePosition()))
             {
@@ -51,7 +40,7 @@ namespace Pathfinder
                 currentColor = defaultColor;
         }
 
-        public void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb)
         {
             if(texture != null)
                 sb.Draw(texture, screenRect, Color.White);

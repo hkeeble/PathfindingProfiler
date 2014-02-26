@@ -5,33 +5,23 @@ using System.Text;
 
 namespace Pathfinder
 {
-    class Dijkstra
+    class Dijkstra : Pathfinder
     {
-        NodeCollection nodes;
+        protected NodeCollection nodes;
 
-        private int gridSize;
+        protected const float HV_COST = 1.0f;
+        protected const float D_COST = 1.4f;
 
-        private const float HV_COST = 1.0f;
-        private const float D_COST = 1.4f;
+        protected Coord2 currentLowestPos;
 
-        Map level;
-        AiBotBase bot;
-        Player plr;
-
-        Coord2 currentLowestPos;
-
-        public Dijkstra(int gridSize)
+        public Dijkstra(int gridSize) : base(gridSize)
         {
             nodes = new NodeCollection(gridSize);
-
-            this.gridSize = gridSize;
         }
 
-        public void Build(Map level, AiBotBase bot, Player plr)
+        public override void Build(Map map, AiBotBase bot, Player plr)
         {
-            this.level = level;
-            this.bot = bot;
-            this.plr = plr;
+            base.Build(map, bot, plr);
 
             nodes = new NodeCollection(gridSize);
 
@@ -73,7 +63,7 @@ namespace Pathfinder
                 {
                     // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
                     if (nodes.Get(currentLowestPos.X, currentLowestPos.Y).cost >= nodes.Get(x, y).cost && nodes.Get(x, y).closed == false &&
-                        level.ValidPosition(new Coord2(x, y)))
+                        map.ValidPosition(new Coord2(x, y)))
                             currentLowestPos = new Coord2(x, y);
                 }
             }
@@ -94,11 +84,11 @@ namespace Pathfinder
             return neighbours;
         }
 
-        private void RecalculateCosts(Coord2[] neighbours, Coord2 pos)
+        protected virtual void RecalculateCosts(Coord2[] neighbours, Coord2 pos)
         {
             for (int i = 0; i < 8; i++)
             {
-                if(level.ValidPosition(neighbours[i]) && nodes.Get(neighbours[i].X, neighbours[i].Y).closed == false)
+                if(map.ValidPosition(neighbours[i]) && nodes.Get(neighbours[i].X, neighbours[i].Y).closed == false)
                 {
                     float costToAdd = 0.0f;
 
@@ -118,25 +108,18 @@ namespace Pathfinder
             }
         }
 
-        private void TracePath()
+        protected void TracePath()
         {
             bool done = false;
             Coord2 nextClosed = plr.GridPosition;
             while (!done)
             {
                 nodes.Get(nextClosed.X, nextClosed.Y).inPath = true;
+                path.Add(nextClosed);
                 nextClosed = nodes.Get(nextClosed.X, nextClosed.Y).link;
                 if (nextClosed == bot.GridPosition)
                     done = true;
             }
-        }
-
-        public bool IsInPath(int x, int y)
-        {
-            if (nodes != null)
-                return nodes.Get(x, y).inPath;
-            else
-                return false;
         }
     }
 }

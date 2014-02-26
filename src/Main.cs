@@ -19,12 +19,11 @@ namespace Pathfinder
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        Level currentLevel;
         
         // Components
         Menu menu;
         InputHandler input;
+        LevelHandler levelHandler;
 
         //screen size and frame rate
         private const int TargetFrameRate = 50;
@@ -40,15 +39,23 @@ namespace Pathfinder
             Content.RootDirectory = "content";
             this.IsMouseVisible = true;
 
+            // Set frame rate
+            TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / TargetFrameRate);
+
             // Add Components
             menu = new Menu(this);
             input = new InputHandler(this);
-            
-            this.Components.Add(menu);
-            this.Components.Add(input);
+            levelHandler = new LevelHandler(this);
 
-            // Set frame rate
-            TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / TargetFrameRate);
+            GameUtils.AddUtil<GameComponentCollection>(Components);
+            GameUtils.GetUtil<GameComponentCollection>().Add(menu);
+            GameUtils.GetUtil<GameComponentCollection>().Add(input);
+            GameUtils.GetUtil<GameComponentCollection>().Add(levelHandler);
+
+            levelHandler.Enabled = false;
+            levelHandler.Visible = false;
+
+            SetState(typeof(Menu));
         }
 
         protected override void Initialize()
@@ -60,12 +67,6 @@ namespace Pathfinder
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
-            // Load textures
-            Texture2D tile1Texture = Content.Load<Texture2D>("tile1");
-            Texture2D tile2Texture = Content.Load<Texture2D>("tile2");
-            Texture2D aiTexture = Content.Load<Texture2D>("ai");
-            Texture2D playerTexture = Content.Load<Texture2D>("target");
         }
 
         protected override void UnloadContent()
@@ -76,68 +77,34 @@ namespace Pathfinder
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (InputHandler.IsKeyDown(Keys.Escape))
                 this.Exit();
-
-            ////player movement: read keyboard
-            //KeyboardState keyState = Keyboard.GetState();
-            //Coord2 currentPos = new Coord2();
-            //currentPos = player.GridPosition;
-
-            //if(keyState.IsKeyDown(Keys.Up))
-            //{
-            //    currentPos.Y -= 1;
-            //    player.SetNextLocation(currentPos, level);
-            //}
-            //else if (keyState.IsKeyDown(Keys.Down))
-            //{
-            //    currentPos.Y += 1;
-            //    player.SetNextLocation(currentPos, level);
-            //}
-            //else if (keyState.IsKeyDown(Keys.Left))
-            //{
-            //    currentPos.X -= 1;
-            //    player.SetNextLocation(currentPos, level);
-            //}
-            //else if (keyState.IsKeyDown(Keys.Right))
-            //{
-            //    currentPos.X += 1;
-            //    player.SetNextLocation(currentPos, level);
-            //}
-            //else if (keyState.IsKeyDown(Keys.Enter))
-            //    BuildNewBotPath();
-
-            ////update bot and player
-            //bot.Update(gameTime, level, player);
-            //player.Update(gameTime, level);
-
-            //// Update scent map objects
-            //scentBot.Update(gameTime, level, player);
-            //level.scentMap.Update(level, player);
-
             base.Update(gameTime);
         }
 
-        private void BuildNewBotPath()
+        public static void SetState(Type state)
         {
-            //level.pathfinder.Build(level, bot, player);
-            //bot.currentPathIndex = level.pathfinder.Path.Count - 1;
+            foreach (GameComponent component in GameUtils.GetUtil<GameComponentCollection>())
+            {
+                if (component is DrawableGameComponent)
+                {
+                    if (component.GetType() == state)
+                    {
+                        component.Enabled = true;
+                        (component as DrawableGameComponent).Visible = true;
+                    }
+                    else
+                    {
+                        component.Enabled = false;
+                        (component as DrawableGameComponent).Visible = false;
+                    }
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            //spriteBatch.Begin();
-            ////draw level map
-            //DrawGrid();
-            ////draw bot
-            //spriteBatch.Draw(aiTexture, bot.ScreenPosition, Color.White);
-            //// draw scent bot
-            //spriteBatch.Draw(aiTexture, bot.GridPosition, Color.White);
-            ////drawe player
-            //spriteBatch.Draw(playerTexture, player.ScreenPosition, Color.White);
-            //spriteBatch.End();
 
             base.Draw(gameTime);
         }

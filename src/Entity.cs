@@ -32,6 +32,11 @@ namespace Pathfinder
             sb.Draw(texture, screenPosition, Color.White);
         }
 
+        public void SetPosition(Coord2 pos)
+        {
+            gridPosition = pos;
+        }
+
         public Coord2 GridPosition { get { return gridPosition; } }
         public Coord2 ScreenPosition { get { return screenPosition; } }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Pathfinder
 {
@@ -20,9 +21,57 @@ namespace Pathfinder
             this.bot = bot;
         }
 
+        public void LoadMap(string fileName)
+        {
+            map.Loadmap(fileName);
+        }
+
+        public void SetPathfindingAlgorithm(PathfinderAlgorithm algorithm)
+        {
+            map.SetPathfinder(algorithm);
+        }
+
+        public void SetPlayerPosition(Coord2 newPos)
+        {
+            player.SetPosition(newPos);
+        }
+
+        public void SetBotPosition(Coord2 newPos)
+        {
+            bot.SetPosition(newPos);
+        }
+
         public void Update(GameTime gameTime)
         {
-            
+            Coord2 currentPos = new Coord2();
+            currentPos = player.GridPosition;
+
+            if (InputHandler.IsKeyDown(Keys.Up))
+            {
+                currentPos.Y -= 1;
+                player.SetNextLocation(currentPos, map);
+            }
+            else if (InputHandler.IsKeyDown(Keys.Down))
+            {
+                currentPos.Y += 1;
+                player.SetNextLocation(currentPos, map);
+            }
+            else if (InputHandler.IsKeyDown(Keys.Left))
+            {
+                currentPos.X -= 1;
+                player.SetNextLocation(currentPos, map);
+            }
+            else if (InputHandler.IsKeyDown(Keys.Right))
+            {
+                currentPos.X += 1;
+                player.SetNextLocation(currentPos, map);
+            }
+            else if (InputHandler.IsKeyDown(Keys.Enter))
+                map.pathfinder.Build(map, bot, player);
+
+            //update bot and player
+            bot.Update(gameTime, map, player);
+            player.Update(gameTime, map);
         }
 
         public void Draw(SpriteBatch sb)
@@ -36,11 +85,8 @@ namespace Pathfinder
 
         public void DrawGrid(SpriteBatch sb)
         {
-            //draws the map grid
+            // Draws the map grid
             int sz = map.GridSize;
-
-            // Get current highest value in scent map
-            int hVal = map.scentMap.HighestValue();
 
             for (int x = 0; x < sz; x++)
             {
@@ -53,17 +99,17 @@ namespace Pathfinder
                         if (map.pathfinder.IsInPath(x, y) == true)
                             sb.Draw(map.Tile1Texture, pos, Color.Red);
                         else
-                        {
-                            // Visualize scent map
-                            int cVal = map.scentMap.Buffer2.data[x, y];
-                            float weight = (float)cVal / (float)hVal;
-                            sb.Draw(map.Tile1Texture, pos, Color.Lerp(Color.White, Color.Red, weight));
-                        }
+                            sb.Draw(map.Tile1Texture, pos, Color.White);
                     }
                     else
                         sb.Draw(map.Tile2Texture, pos, Color.White);
                 }
             }
         }
+
+        // Set Accessor
+        public Map Map { set { map = value; } }
+        public Player Player { set { player = value; } }
+        public AiBotBase Bot { set { bot = value; } }
     }
 }

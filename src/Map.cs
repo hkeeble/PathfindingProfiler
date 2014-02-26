@@ -11,19 +11,25 @@ using System.IO;
 
 namespace Pathfinder
 {
-    //loads a map from an ascii text file
+    /// <summary>
+    /// Represents a map loaded from an ASCII text file.
+    /// </summary>
     class Map
     {
-        private const int gridSize = 40; //set the map grid size
-        public int [,] tiles; //a 2d array of 0's and 1's: 0 = free cell, 1 = blocked cell
+        private const int gridSize = 40;
+        public int [,] tiles;
 
         private Texture2D tile1Texture;
         private Texture2D tile2Texture;
 
-        public AStar pathfinder;
-        
+        public Pathfinder pathfinder;
         public ScentMap scentMap;
 
+        /// <summary>
+        /// Constructor initializes tile array and tile textures.
+        /// </summary>
+        /// <param name="tile1Texture">Texture for floor tile.</param>
+        /// <param name="tile2Texture">Texture for blocked/wall tile.</param>
         public Map(Texture2D tile1Texture, Texture2D tile2Texture)
         {
             tiles = new int[gridSize, gridSize];
@@ -31,19 +37,52 @@ namespace Pathfinder
                 for (int j = 0; j < gridSize; j++)
                     tiles[i,j] = 0;
 
-            pathfinder = new AStar(gridSize);
-            scentMap = new ScentMap(gridSize);
+            pathfinder = null;
+            scentMap = null;
 
             this.tile1Texture = tile1Texture;
             this.tile2Texture = tile2Texture;
+        }
+
+        /// <summary>
+        /// Set the current pathfinding algorithm.
+        /// </summary>
+        /// <param name="algorithm">The algorithm to use in pathfinding.</param>
+        public void SetPathfinder(PathfinderAlgorithm algorithm)
+        {
+            Console.Write("Map.cs: Setting pathfinding algorithm to: ");
+
+            switch (algorithm)
+            {
+                case PathfinderAlgorithm.Dijkstra:
+                    pathfinder = new Dijkstra(gridSize);
+                    Console.Write("Dijkstra.\n");
+                    break;
+                case PathfinderAlgorithm.AStar:
+                    pathfinder = new AStar(gridSize);
+                    Console.Write("A Star.\n");
+                    break;
+                case PathfinderAlgorithm.ScentMap:
+                    scentMap = new ScentMap(gridSize);
+                    pathfinder = null;
+                    Console.Write("Scent Map.\n");
+                    break;
+                default:
+                    Console.WriteLine("Error: Unrecognized pathfinding algorithm set in current map, defaulting pathfinder to Dijkstra.\n");
+                    pathfinder = new Dijkstra(gridSize);
+                    break;
+            }
         }
 
         public int GridSize { get { return gridSize; } }
         public Texture2D Tile1Texture { get { return tile1Texture; } }
         public Texture2D Tile2Texture { get { return tile2Texture; } }
 
-        //validates a grid position (passed as a 2d vector): returns false if position is blocked, or if x or y 
-        //positions are greater than grid size, or less than 0
+        /// <summary>
+        /// Returns whether or not a coordinate is a valid position in the map.
+        /// </summary>
+        /// <param name="pos">The position to check for validity.</param>
+        /// <returns></returns>
         public bool ValidPosition(Coord2 pos)
         {
             if (pos.X < 0) return false;
@@ -53,7 +92,10 @@ namespace Pathfinder
             return (tiles[pos.X,pos.Y] == 0);
         }
 
-        //loads the map from a text file
+        /// <summary>
+        /// Loads a map from a given text file.
+        /// </summary>
+        /// <param name="path">File path of the map file to load.</param>
         public void Loadmap(string path)
         {
             List<string> lines = new List<string>();

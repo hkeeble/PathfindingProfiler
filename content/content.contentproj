@@ -55,34 +55,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ai.png">
+    <Compile Include="Images\ai.png">
       <Name>ai</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="target.png">
+    <Compile Include="Images\target.png">
       <Name>target</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="tile1.png">
+    <Compile Include="Images\tile1.png">
       <Name>tile1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="tile2.png">
+    <Compile Include="Images\tile2.png">
       <Name>tile2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MenuButtonFont.spritefont">
+    <Compile Include="Fonts\MenuButtonFont.spritefont">
       <Name>MenuButtonFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
-    <Compile Include="MenuTitleFont.spritefont">
+    <Compile Include="Fonts\MenuTitleFont.spritefont">
       <Name>MenuTitleFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
@@ -111,40 +111,52 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="menuBack.png">
+    <Compile Include="Images\menuBack.png">
       <Name>menuBack</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="button.png">
+    <Compile Include="Images\button.png">
       <Name>button</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="0.map">
+    <Compile Include="Fonts\MenuSubTitleFont.spritefont">
+      <Name>MenuSubTitleFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Maps\0.map">
       <Name>0</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="1.map">
+    <None Include="Maps\1.map">
       <Name>1</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="2.map">
+    <None Include="Maps\2.map">
       <Name>2</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="3.map">
+    <None Include="Maps\3.map">
       <Name>3</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="4.map">
+    <None Include="Maps\4.map">
       <Name>4</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Images\textbox.png">
+      <Name>textbox</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
