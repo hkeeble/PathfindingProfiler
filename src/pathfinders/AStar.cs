@@ -15,6 +15,7 @@ namespace Pathfinder
         public AStar(int gridSize) : base(gridSize)
         {
             nodes = new NodeCollection(gridSize);
+            Name = "A Star";
         }
 
         protected override void RecalculateCosts(Coord2[] neighbours, Coord2 pos)

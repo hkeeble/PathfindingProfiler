@@ -22,8 +22,8 @@ namespace Pathfinder
         private Texture2D tile1Texture;
         private Texture2D tile2Texture;
 
-        public Pathfinder pathfinder;
-        public ScentMap scentMap;
+        public IPathfinder pathfinder;
+        private PathfinderAlgorithm algorithm;
 
         /// <summary>
         /// Constructor initializes tile array and tile textures.
@@ -38,7 +38,6 @@ namespace Pathfinder
                     tiles[i,j] = 0;
 
             pathfinder = null;
-            scentMap = null;
 
             this.tile1Texture = tile1Texture;
             this.tile2Texture = tile2Texture;
@@ -50,33 +49,16 @@ namespace Pathfinder
         /// <param name="algorithm">The algorithm to use in pathfinding.</param>
         public void SetPathfinder(PathfinderAlgorithm algorithm)
         {
-            Console.Write("Map.cs: Setting pathfinding algorithm to: ");
-
-            switch (algorithm)
-            {
-                case PathfinderAlgorithm.Dijkstra:
-                    pathfinder = new Dijkstra(gridSize);
-                    Console.Write("Dijkstra.\n");
-                    break;
-                case PathfinderAlgorithm.AStar:
-                    pathfinder = new AStar(gridSize);
-                    Console.Write("A Star.\n");
-                    break;
-                case PathfinderAlgorithm.ScentMap:
-                    scentMap = new ScentMap(gridSize);
-                    pathfinder = null;
-                    Console.Write("Scent Map.\n");
-                    break;
-                default:
-                    Console.WriteLine("Error: Unrecognized pathfinding algorithm set in current map, defaulting pathfinder to Dijkstra.\n");
-                    pathfinder = new Dijkstra(gridSize);
-                    break;
-            }
+            this.algorithm = algorithm;
+            pathfinder = PathfinderFactory.CreatePathfinder(algorithm, gridSize);
+            Console.WriteLine("Map.cs: Pathfinding algorithm set to " + pathfinder.GetName() + ".\n");
         }
 
+        // Get Accessors
         public int GridSize { get { return gridSize; } }
         public Texture2D Tile1Texture { get { return tile1Texture; } }
         public Texture2D Tile2Texture { get { return tile2Texture; } }
+        public PathfinderAlgorithm PathfindingAlgorithm { get { return algorithm; } }
 
         /// <summary>
         /// Returns whether or not a coordinate is a valid position in the map.

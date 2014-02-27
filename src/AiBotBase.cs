@@ -12,16 +12,22 @@ using System.IO;
 
 namespace Pathfinder
 {
+    /// <summary>
+    /// Abstract class used for bots.
+    /// </summary>
     abstract class AiBotBase : Entity
     {
-        public int currentPathIndex; // Current index in the path given
+        // Current index in the path given
+        public int currentPathIndex;
 
-        //constructor: requires initial position
         public AiBotBase(Texture2D texture, int x, int y) : base(texture, x, y, 400) { }
 
-        //sets target position: the next grid location to move to
-        //need to validate this position - so must be within 1 cell of current position(in x and y directions)
-        //and must also be valid on the map: greater than 0, less than mapsize, and not a wall
+        /// <summary>
+        /// Sets target position: the next grid location to move to
+        /// </summary>
+        /// <param name="pos">Next grid position. Must be within 1 cell of current position(in x and y directions) and a valid map position.</param>
+        /// <param name="level">The map being moved on.</param>
+        /// <returns></returns>
         public bool SetNextGridPosition(Coord2 pos, Map level)
         {
             if (pos.X < (gridPosition.X - 1)) return false;
@@ -33,9 +39,9 @@ namespace Pathfinder
             return true;
         }
 
-        //Handles animation moving from current grid position (gridLocation) to next grid position (targetLocation)
-        //When target location is reached, sets grid location to targetLocation, and then calls ChooseNextGridLocation
-        //and resets animation timer
+        /// <summary>
+        /// Handles animation moving from current grid position (gridLocation) to next grid position (targetLocation).
+        /// </summary>
         public virtual void Update(GameTime gameTime, Map level, Player plr)
         {
             timerMs -= gameTime.ElapsedGameTime.Milliseconds;

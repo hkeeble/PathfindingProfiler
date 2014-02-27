@@ -35,8 +35,12 @@ namespace Pathfinder
 
         // Unecapsulated resources
         Texture2D backgroundTexture;
+        Texture2D buttonTexture;
+        Texture2D textBoxTexture;
+
         SpriteFont titleFont;
         SpriteFont subTitleFont;
+        SpriteFont buttonFont;
 
         // Title position
         Vector2 titlePos;
@@ -60,13 +64,20 @@ namespace Pathfinder
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load Content
-            titleFont                = Game.Content.Load<SpriteFont>("Fonts/MenuTitleFont");
-            subTitleFont             = Game.Content.Load<SpriteFont>("Fonts/MenuSubTitleFont");
-            SpriteFont buttonFont    = Game.Content.Load<SpriteFont>("Fonts/MenuButtonFont");
-            backgroundTexture        = Game.Content.Load<Texture2D> ("Images/menuBack");
-            Texture2D buttonTexture  = Game.Content.Load<Texture2D> ("Images/button");
-            Texture2D textBoxTexture = Game.Content.Load<Texture2D> ("Images/textbox");
+            titleFont           = Game.Content.Load<SpriteFont>("Fonts/MenuTitleFont");
+            subTitleFont        = Game.Content.Load<SpriteFont>("Fonts/MenuSubTitleFont");
+            buttonFont          = Game.Content.Load<SpriteFont>("Fonts/MenuButtonFont");
+            backgroundTexture   = Game.Content.Load<Texture2D> ("Images/menuBack");
+            buttonTexture       = Game.Content.Load<Texture2D> ("Images/button");
+            textBoxTexture      = Game.Content.Load<Texture2D> ("Images/textbox");
 
+            Init();
+
+            base.LoadContent();
+        }
+
+        private void Init()
+        {
             // Useful values for positioning
             float centerX = Game.Window.ClientBounds.Width / 2;
             float quarterX = Game.Window.ClientBounds.Width / 4;
@@ -86,11 +97,9 @@ namespace Pathfinder
             buttons.Add(new Button(new Vector2(textBoxPos.X + textBoxDims.X, textBoxPos.Y), new Vector2(100, textBoxDims.Y), buttonTexture, "Load", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenMapFile));
 
             // Calculate positions
-            titlePos           = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
-            textBoxTitlePos    = new Vector2(textBoxPos.X, textBoxPos.Y - subTitleFont.MeasureString(textBoxTitle).Y);
-            algorithmsTitlePos = new Vector2(textBoxTitlePos.X, textBoxTitlePos.Y + (textBoxDims.Y*2) + 5);
-
-            base.LoadContent();
+            titlePos = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
+            textBoxTitlePos = new Vector2(textBoxPos.X, textBoxPos.Y - subTitleFont.MeasureString(textBoxTitle).Y);
+            algorithmsTitlePos = new Vector2(textBoxTitlePos.X, textBoxTitlePos.Y + (textBoxDims.Y * 2) + 5);
         }
 
         public override void Initialize()
@@ -132,6 +141,14 @@ namespace Pathfinder
 
             base.Update(gameTime);
          }
+
+        protected override void OnEnabledChanged(object sender, EventArgs args)
+        {
+            if (this.Enabled)
+                Init();
+
+            base.OnEnabledChanged(sender, args);
+        }
 
         private void LoadMap()
         {

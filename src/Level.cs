@@ -43,6 +43,19 @@ namespace Pathfinder
 
         public void Update(GameTime gameTime)
         {
+            // Handle player input for movement
+            HandlePlayerMovement();
+
+            // Update the pathfinder
+            map.pathfinder.Update(gameTime, map, bot, player);
+
+            // Update bot and player
+            bot.Update(gameTime, map, player);
+            player.Update(gameTime, map);
+        }
+
+        private void HandlePlayerMovement()
+        {
             Coord2 currentPos = new Coord2();
             currentPos = player.GridPosition;
 
@@ -66,12 +79,6 @@ namespace Pathfinder
                 currentPos.X += 1;
                 player.SetNextLocation(currentPos, map);
             }
-            else if (InputHandler.IsKeyDown(Keys.Enter))
-                map.pathfinder.Build(map, bot, player);
-
-            //update bot and player
-            bot.Update(gameTime, map, player);
-            player.Update(gameTime, map);
         }
 
         public void Draw(SpriteBatch sb)
@@ -83,31 +90,65 @@ namespace Pathfinder
             sb.End();
         }
 
+        /// <summary>
+        /// Draws the grid and any neccesary pathfinding visual representation.
+        /// </summary>
+        /// <param name="sb">The spritebatch to use.</param>
         public void DrawGrid(SpriteBatch sb)
         {
-            // Draws the map grid
             int sz = map.GridSize;
 
-            for (int x = 0; x < sz; x++)
+            // Draw grid the same way for both dijkstra and astar
+            if (map.PathfindingAlgorithm == PathfinderAlgorithm.Dijkstra || map.PathfindingAlgorithm == PathfinderAlgorithm.AStar)
             {
-                for (int y = 0; y < sz; y++)
+                for (int x = 0; x < sz; x++)
                 {
-                    Coord2 pos = new Coord2((x * 15), (y * 15));
-
-                    if (map.tiles[x, y] == 0)
+                    for (int y = 0; y < sz; y++)
                     {
-                        if (map.pathfinder.IsInPath(x, y) == true)
-                            sb.Draw(map.Tile1Texture, pos, Color.Red);
+                        Coord2 pos = new Coord2((x * 15), (y * 15));
+
+                        if (map.tiles[x, y] == 0)
+                        {
+                            if (map.pathfinder.IsInPath(x, y) == true)
+                                sb.Draw(map.Tile1Texture, pos, Color.Red);
+                            else
+                            {
+                                if (map.pathfinder.GetValue(x, y) == 0)
+                                    sb.Draw(map.Tile1Texture, pos, Color.White);
+                                else
+                                    sb.Draw(map.Tile1Texture, pos, Color.Blue);
+                            }
+                        }
                         else
-                            sb.Draw(map.Tile1Texture, pos, Color.White);
+                            sb.Draw(map.Tile2Texture, pos, Color.White);
                     }
-                    else
-                        sb.Draw(map.Tile2Texture, pos, Color.White);
+                }
+            }
+            else if (map.PathfindingAlgorithm == PathfinderAlgorithm.ScentMap)
+            {
+                int highestValue = map.pathfinder.HighestValue();
+
+                for (int x = 0; x < sz; x++)
+                {
+                    for (int y = 0; y < sz; y++)
+                    {
+                        Coord2 pos = new Coord2((x * 15), (y * 15));
+
+                        if (map.tiles[x, y] == 0)
+                        {
+                            if (map.pathfinder.IsInPath(x, y) == true)
+                                sb.Draw(map.Tile1Texture, pos, Color.Red);
+                            else
+                                sb.Draw(map.Tile1Texture, pos, Color.Lerp(Color.White, Color.Red, map.pathfinder.GetValue(x, y)/highestValue));
+                        }
+                        else
+                            sb.Draw(map.Tile2Texture, pos, Color.White);
+                    }
                 }
             }
         }
 
-        // Set Accessor
+        // Set Accessors
         public Map Map { set { map = value; } }
         public Player Player { set { player = value; } }
         public AiBotBase Bot { set { bot = value; } }

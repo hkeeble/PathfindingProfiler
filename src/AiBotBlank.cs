@@ -28,25 +28,9 @@ namespace Pathfinder
             return true;
         }
 
-        /// <summary>
-        /// Handles animation moving from current grid position (gridLocation) to next grid position (targetLocation).
-        /// </summary>
-        public virtual void Update(GameTime gameTime, Map level, Player plr)
-        {
-            timerMs -= gameTime.ElapsedGameTime.Milliseconds;
-            if (timerMs <= 0)
-            {
-                gridPosition = targetPosition;
-                ChooseNextGridLocation(level, plr);
-                timerMs = moveTime;
-            }
-            //calculate screen position
-            screenPosition = (gridPosition * 15) + ((((targetPosition * 15) - (gridPosition * 15)) * (moveTime - timerMs)) / moveTime);
-        }
-
         protected override void ChooseNextGridLocation(Map level, Player plr)
         {
-            SetNextGridPosition(new Coord2(0, 0), level);
+            SetNextGridPosition(gridPosition, level);
         }
     }
 }

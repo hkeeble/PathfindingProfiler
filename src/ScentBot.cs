@@ -17,24 +17,24 @@ namespace Pathfinder
 
         protected override void ChooseNextGridLocation(Map level, Player plr)
         {
-            Coord2[] neighbours = GetNeighbours();
+            //Coord2[] neighbours = GetNeighbours();
 
-            int cVal = 0;
-            Coord2 cPos = new Coord2(0, 0);
-            for (int i = 0; i < neighbours.Length; i++)
-            {
-                if(level.ValidPosition(neighbours[i]))
-                {
-                    int lVal = level.scentMap.Buffer1.data[neighbours[i].X, neighbours[i].Y];
-                    if (lVal > cVal)
-                    {
-                        cVal = lVal;
-                        cPos = new Coord2(neighbours[i].X, neighbours[i].Y);
-                    }
-                }
-            }
+            //int cVal = 0;
+            //Coord2 cPos = new Coord2(0, 0);
+            //for (int i = 0; i < neighbours.Length; i++)
+            //{
+            //    if(level.ValidPosition(neighbours[i]))
+            //    {
+            //        int lVal = level.scentMap.Buffer1.data[neighbours[i].X, neighbours[i].Y];
+            //        if (lVal > cVal)
+            //        {
+            //            cVal = lVal;
+            //            cPos = new Coord2(neighbours[i].X, neighbours[i].Y);
+            //        }
+            //    }
+            //}
 
-            SetNextGridPosition(cPos, level);
+            //SetNextGridPosition(cPos, level);
         }
 
         private Coord2[] GetNeighbours()

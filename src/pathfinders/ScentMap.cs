@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Pathfinder
 {
-    class ScentMap
+    class ScentMap : IPathfinder
     {
         public struct ScentBuffer
         {
@@ -22,18 +23,25 @@ namespace Pathfinder
         }
 
         private int gridSize;
+        private string name;
         private ScentBuffer buffer1, buffer2;
         int sourceValue;
 
         public ScentMap(int gridSize)
         {
+            name = "Scent Map";
             this.gridSize = gridSize;
             buffer1 = new ScentBuffer(gridSize);
             buffer2 = new ScentBuffer(gridSize);
             sourceValue = 0;
         }
 
-        public void Update(Map lvl, Player plr)
+        public virtual string GetName()
+        {
+            return name;
+        }
+
+        public void Update(GameTime gameTime, Map map, AiBotBase bot, Player player)
         {
             buffer2 = buffer1; // Copy Buffers
 
@@ -48,15 +56,15 @@ namespace Pathfinder
                 for (int y = 0; y < gridSize; y++)
                 {
                     currentLoc = new Coord2(x, y);
-                    if (lvl.ValidPosition(currentLoc)) // Ignore blocked spaces
-                        ProcessLocation(currentLoc, lvl, plr);
+                    if (map.ValidPosition(currentLoc)) // Ignore blocked spaces
+                        ProcessLocation(currentLoc, map, player);
                 }
             }
 
             // Update data in player's location
-            buffer1.data[plr.GridPosition.X, plr.GridPosition.Y] = sourceValue;
+            buffer1.data[player.GridPosition.X, player.GridPosition.Y] = sourceValue;
         }
-
+        
         public int HighestValue()
         {
             int currentVal = 0;
@@ -101,7 +109,7 @@ namespace Pathfinder
             }
         }
 
-        private Coord2[] GetNeighbours(Coord2 location)
+        protected Coord2[] GetNeighbours(Coord2 location)
         {
             Coord2[] neighbours = new Coord2[8];
             neighbours[0] = new Coord2(location.X + 1, location.Y + 1);
@@ -116,7 +124,13 @@ namespace Pathfinder
             return neighbours;
         }
 
-        public ScentBuffer Buffer1 { get { return buffer1; } }
-        public ScentBuffer Buffer2 { get { return buffer2; } }
+        public int GetValue(int x, int y)
+        {
+            return buffer1.data[x, y];
+        }
+
+        // Unused methods
+        public void Clear() { }
+        public bool IsInPath(int x, int y) { return false; }
     }
 }

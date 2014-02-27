@@ -76,9 +76,6 @@ namespace Pathfinder
 
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (InputHandler.IsKeyDown(Keys.Escape))
-                this.Exit();
             base.Update(gameTime);
         }
 

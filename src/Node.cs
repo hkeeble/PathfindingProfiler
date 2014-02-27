@@ -39,5 +39,12 @@ namespace Pathfinder
         {
             return nodes[x, y];
         }
+
+        public void Clear()
+        {
+            for (int x = 0; x < nodes.GetLength(0); x++)
+                for (int y = 0; y < nodes.GetLength(1); y++)
+                    nodes[x, y] = new Node(); 
+        }
     }
 }

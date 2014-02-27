@@ -2,11 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Pathfinder
 {
-    class Dijkstra : Pathfinder
+    class Dijkstra : IPathfinder
     {
+        protected int GridSize { get; set; }
+        protected string Name { get; set; }
+
+        protected Map map;
+        protected AiBotBase bot;
+        protected Player plr;
+
+        protected List<Coord2> path;
+
         protected NodeCollection nodes;
 
         protected const float HV_COST = 1.0f;
@@ -14,52 +24,86 @@ namespace Pathfinder
 
         protected Coord2 currentLowestPos;
 
-        public Dijkstra(int gridSize) : base(gridSize)
+        private Profile profile;
+
+        public Dijkstra(int gridSize)
         {
+            Name = "Dijkstra";
+            profile = new Profile("Dijkstra Path Time");
+            GridSize = gridSize;
             nodes = new NodeCollection(gridSize);
+            path = new List<Coord2>();
         }
 
-        public override void Build(Map map, AiBotBase bot, Player plr)
+        public virtual string GetName()
         {
-            base.Build(map, bot, plr);
+            return Name;
+        }
 
-            nodes = new NodeCollection(gridSize);
-
-            // Initialize bot position
-            nodes.Get(bot.GridPosition.X, bot.GridPosition.Y).cost = 0;
-            bool firstLoop = true;
-
-            while (nodes.Get(plr.GridPosition.X, plr.GridPosition.Y).closed == false)
+        public void Update(GameTime gameTime, Map map, AiBotBase bot, Player plr)
+        {
+            if(InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
-                if (firstLoop)
+                profile.Start(gameTime);
+                this.map = map;
+                this.bot = bot;
+                this.plr = plr;
+                path = new List<Coord2>();
+
+                nodes = new NodeCollection(GridSize);
+
+                // Initialize bot position
+                nodes.Get(bot.GridPosition.X, bot.GridPosition.Y).cost = 0;
+                bool firstLoop = true;
+
+                while (nodes.Get(plr.GridPosition.X, plr.GridPosition.Y).closed == false)
                 {
-                    currentLowestPos = bot.GridPosition;
-                    firstLoop = false;
+                    if (firstLoop)
+                    {
+                        currentLowestPos = bot.GridPosition;
+                        firstLoop = false;
+                    }
+                    else
+                        FindLowestCost(); // Find lowest cost
+
+                    // Mark lowest cost as closed
+                    nodes.Get(currentLowestPos.X, currentLowestPos.Y).closed = true;
+
+                    // Find the neigbour positions
+                    Coord2[] neighbours = GetNeighbours(currentLowestPos);
+
+                    // Recalculate Costs
+                    RecalculateCosts(neighbours, currentLowestPos);
                 }
-                else
-                    FindLowestCost(); // Find lowest cost
 
-                // Mark lowest cost as closed
-                nodes.Get(currentLowestPos.X, currentLowestPos.Y).closed = true;
-
-                // Find the neigbour positions
-                Coord2[] neighbours = FindNeighbours(currentLowestPos);
-
-                // Recalculate Costs
-                RecalculateCosts(neighbours, currentLowestPos);
+                // Trace the completed path
+                TracePath();
+                profile.End(gameTime);
             }
+        }
 
-            // Trace the completed path
-            TracePath();
+        protected Coord2[] GetNeighbours(Coord2 location)
+        {
+            Coord2[] neighbours = new Coord2[8];
+            neighbours[0] = new Coord2(location.X + 1, location.Y + 1);
+            neighbours[1] = new Coord2(location.X - 1, location.Y - 1);
+            neighbours[2] = new Coord2(location.X - 1, location.Y + 1);
+            neighbours[3] = new Coord2(location.X + 1, location.Y - 1);
+            neighbours[4] = new Coord2(location.X, location.Y + 1);
+            neighbours[5] = new Coord2(location.X + 1, location.Y);
+            neighbours[6] = new Coord2(location.X - 1, location.Y);
+            neighbours[7] = new Coord2(location.X, location.Y - 1);
+
+            return neighbours;
         }
 
         private void FindLowestCost()
         {
             currentLowestPos = plr.GridPosition;
 
-            for (int x = 0; x < gridSize; x++)
+            for (int x = 0; x < GridSize; x++)
             {
-                for (int y = 0; y < gridSize; y++)
+                for (int y = 0; y < GridSize; y++)
                 {
                     // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
                     if (nodes.Get(currentLowestPos.X, currentLowestPos.Y).cost >= nodes.Get(x, y).cost && nodes.Get(x, y).closed == false &&
@@ -67,21 +111,6 @@ namespace Pathfinder
                             currentLowestPos = new Coord2(x, y);
                 }
             }
-        }
-
-        private Coord2[] FindNeighbours(Coord2 pos)
-        {
-            Coord2[] neighbours = new Coord2[8];
-            neighbours[0] = new Coord2(pos.X + 1, pos.Y + 1);
-            neighbours[1] = new Coord2(pos.X - 1, pos.Y - 1);
-            neighbours[2] = new Coord2(pos.X - 1, pos.Y + 1);
-            neighbours[3] = new Coord2(pos.X + 1, pos.Y - 1);
-            neighbours[4] = new Coord2(pos.X, pos.Y + 1);
-            neighbours[5] = new Coord2(pos.X + 1, pos.Y);
-            neighbours[6] = new Coord2(pos.X - 1, pos.Y);
-            neighbours[7] = new Coord2(pos.X, pos.Y - 1);
-
-            return neighbours;
         }
 
         protected virtual void RecalculateCosts(Coord2[] neighbours, Coord2 pos)
@@ -121,5 +150,27 @@ namespace Pathfinder
                     done = true;
             }
         }
+
+        public bool IsInPath(int x, int y)
+        {
+            return path.Contains(new Coord2(x, y));
+        }
+
+        public List<Coord2> Path { get { return path; } }
+
+        public void Clear()
+        {
+            path.Clear();
+            nodes.Clear();
+        }
+
+        public int GetValue(int x, int y)
+        {
+            return Convert.ToInt16(nodes.Get(x, y).closed);
+        }
+
+        // Unused interface methods
+        public int LowestValue() { return 0; }
+        public int HighestValue() { return 0; }
     }
 }

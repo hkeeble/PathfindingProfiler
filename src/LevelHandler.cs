@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Windows.Forms;
 
 namespace Pathfinder
 {
@@ -87,6 +88,13 @@ namespace Pathfinder
         public override void Update(GameTime gameTime)
         {
             level.Update(gameTime);
+
+            // Check if user wishes to return to menu
+            if(InputHandler.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+            {
+                if (MessageBox.Show("Return to the menu?", "Return to Menu", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == DialogResult.Yes)
+                    Main.SetState(typeof(Menu));
+            }
 
             base.Update(gameTime);
         }
