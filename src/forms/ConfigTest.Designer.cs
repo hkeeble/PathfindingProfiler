@@ -113,7 +113,6 @@
             this.textBoxOutputFilename.Name = "textBoxOutputFilename";
             this.textBoxOutputFilename.Size = new System.Drawing.Size(114, 20);
             this.textBoxOutputFilename.TabIndex = 6;
-            this.textBoxOutputFilename.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxOutputFilename_KeyPress);
             // 
             // label4
             // 

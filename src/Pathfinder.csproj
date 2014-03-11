@@ -131,12 +131,16 @@
     <Compile Include="forms\ConfigTest.Designer.cs">
       <DependentUpon>ConfigTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\TestCompletedEvent.cs" />
     <Compile Include="forms\TestData.cs" />
     <Compile Include="forms\TestRun.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="forms\TestRun.Designer.cs">
       <DependentUpon>TestRun.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\TestWorker.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="GameUtils.cs" />
     <Compile Include="InputHandler.cs" />

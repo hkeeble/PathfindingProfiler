@@ -70,8 +70,8 @@ namespace Pathfinder
                 errorText += ERROR_MSG.RUNS_IS_ZERO;
             }
 
-
-            MessageBox.Show("Invalid input: \n" + errorText, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if(!valid)
+                MessageBox.Show("Invalid input: \n" + errorText, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             return valid;
         }
@@ -110,18 +110,12 @@ namespace Pathfinder
 
                 // Run Tests...
                 TestRun test = new TestRun();
-                // TestResultCollection results = test.Run(config, this);
+                test.Run(config);
+                this.Close();
             }
         }
 
         private void textBoxDistance_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // Prevent letters
-            if (Char.IsLetter(e.KeyChar))
-                e.Handled = true;
-        }
-
-        private void textBoxOutputFilename_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Prevent letters
             if (Char.IsLetter(e.KeyChar))
