@@ -18,7 +18,8 @@ namespace Pathfinder
         OpenDijkstra,
         OpenAStar,
         OpenScentAlgorithm,
-        OpenMapFile
+        OpenMapFile,
+        OpenTestConfig
     }
 
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
@@ -26,6 +27,7 @@ namespace Pathfinder
         const string title           = "Pathfinding Profiler v1.0";
         const string textBoxTitle    = "Current map: ";
         const string algorithmsTitle = "Choose an algorithm: ";
+        const string testTitle       = "Or Configure a Test for this map: ";
 
         SpriteBatch spriteBatch;
         List<Button> buttons;
@@ -48,6 +50,7 @@ namespace Pathfinder
         // Other text positions
         Vector2 textBoxTitlePos;
         Vector2 algorithmsTitlePos;
+        Vector2 testTitlePos;
 
         // The currently loaded map
         Map currentMap;
@@ -84,9 +87,14 @@ namespace Pathfinder
 
             // Create Algorithm Buttons
             buttons = new List<Button>();
-            buttons.Add(new Button(new Vector2(quarterX - 75, 250), new Vector2(150, 50), buttonTexture, "Dijkstra", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenDijkstra));
-            buttons.Add(new Button(new Vector2(quarterX - 75, 350), new Vector2(150, 70), buttonTexture, "A Star", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenAStar));
-            buttons.Add(new Button(new Vector2(quarterX - 75, 450), new Vector2(150, 70), buttonTexture, "  Scent\nAlgorithm", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenScentAlgorithm));
+            buttons.Add(new Button(new Vector2(quarterX - 75, 250), new Vector2(150, 50), buttonTexture, "Dijkstra", buttonFont, Color.White, Color.Yellow,
+                MenuCommand.OpenDijkstra));
+
+            buttons.Add(new Button(new Vector2(quarterX - 75, 350), new Vector2(150, 70), buttonTexture, "A Star", buttonFont, Color.White, Color.Yellow,
+                MenuCommand.OpenAStar));
+
+            buttons.Add(new Button(new Vector2(quarterX + 175, 250), new Vector2(150, 70), buttonTexture, "  Scent\nAlgorithm", buttonFont, Color.White,
+                Color.Yellow, MenuCommand.OpenScentAlgorithm));
 
             // Create Textbox
             Vector2 textBoxPos = new Vector2(70, 120);
@@ -94,12 +102,18 @@ namespace Pathfinder
             textBox = new TextBox(textBoxPos, textBoxDims, textBoxTexture, "", buttonFont, Color.Black);
 
             // Create load map button
-            buttons.Add(new Button(new Vector2(textBoxPos.X + textBoxDims.X, textBoxPos.Y), new Vector2(100, textBoxDims.Y), buttonTexture, "Load", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenMapFile));
+            buttons.Add(new Button(new Vector2(textBoxPos.X + textBoxDims.X, textBoxPos.Y), new Vector2(100, textBoxDims.Y), buttonTexture, "Load",
+                buttonFont, Color.White, Color.Yellow, MenuCommand.OpenMapFile));
+
+            // Create test configuration button
+            buttons.Add(new Button(new Vector2(centerX - ((Game.Window.ClientBounds.Width - 120) / 2), Game.Window.ClientBounds.Height - 150), new Vector2(Game.Window.ClientBounds.Width - 120, textBoxDims.Y),
+                buttonTexture, "Configure Test", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenTestConfig));
 
             // Calculate positions
             titlePos = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
             textBoxTitlePos = new Vector2(textBoxPos.X, textBoxPos.Y - subTitleFont.MeasureString(textBoxTitle).Y);
             algorithmsTitlePos = new Vector2(textBoxTitlePos.X, textBoxTitlePos.Y + (textBoxDims.Y * 2) + 5);
+            testTitlePos = new Vector2(algorithmsTitlePos.X, algorithmsTitlePos.Y + (textBoxDims.Y * 4) + 30);
         }
 
         public override void Initialize()
@@ -134,6 +148,11 @@ namespace Pathfinder
                     }
                     else if (b.Command == MenuCommand.OpenMapFile)
                         OpenMap();
+                    else if (b.Command == MenuCommand.OpenTestConfig)
+                    {
+                        if(LoadMap())
+                            RunTestConfig();
+                    }
                     else
                         Console.WriteLine("Unrecognized menu button command called.\n");
                 }
@@ -150,16 +169,20 @@ namespace Pathfinder
             base.OnEnabledChanged(sender, args);
         }
 
-        private void LoadMap()
+        private bool LoadMap()
         {
             if (textBox.Text != "")
             {
                 LevelHandler.SetMap("Content/Maps/" + textBox.Text);
                 LevelHandler.SetPlayerPosition(new Coord2(0, 0));
                 LevelHandler.SetBotPosition(new Coord2(10, 10));
+                return true;
             }
             else
+            {
                 ShowNoMapError();
+                return false;
+            }
         }
 
         private void ShowNoMapError()
@@ -180,6 +203,9 @@ namespace Pathfinder
 
             // Draw text above buttons
             spriteBatch.DrawString(subTitleFont, algorithmsTitle, algorithmsTitlePos, Color.Yellow);
+
+            // Draw text above test button
+            spriteBatch.DrawString(subTitleFont, testTitle, testTitlePos, Color.Yellow);
 
             // Draw Buttons
             foreach (Button b in buttons)
@@ -211,6 +237,12 @@ namespace Pathfinder
                 MessageBox.Show("File not found.");
                 textBox.Text = "";
             }
+        }
+
+        private void RunTestConfig()
+        {
+            ConfigTest testConfigBox = new ConfigTest();
+            testConfigBox.Show();
         }
     }
 }

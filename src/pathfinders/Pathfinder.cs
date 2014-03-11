@@ -83,17 +83,13 @@ namespace Pathfinder
             {
                 case PathfinderAlgorithm.Dijkstra:
                     return (IPathfinder)new Dijkstra(gridSize);
-                    break;
                 case PathfinderAlgorithm.AStar:
                     return (IPathfinder)new AStar(gridSize);
-                    break;
                 case PathfinderAlgorithm.ScentMap:
                     return (IPathfinder)new ScentMap(gridSize);
-                    break;
                 default:
                     Console.WriteLine("PathfinderFactory: Attempted to create unrecognized pathfinder type. Returning Dijkstra.\n");
                     return (IPathfinder)new Dijkstra(gridSize);
-                    break;
             }
         }
     }

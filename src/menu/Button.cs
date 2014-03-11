@@ -35,6 +35,8 @@ namespace Pathfinder
 
                 if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton))
                     pressed = true;
+                else
+                    pressed = false;
             }
             else
                 currentColor = defaultColor;

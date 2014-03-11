@@ -98,5 +98,12 @@ namespace Pathfinder
 
             base.Update(gameTime);
         }
+
+        public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 botPos, Coord2 targetPos)
+        {
+            return new TestResult();
+        }
+
+        public static Level Level { get { return level; } }
     }
 }

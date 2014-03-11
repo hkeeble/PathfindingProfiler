@@ -125,6 +125,19 @@
     <Compile Include="AiBotBlank.cs" />
     <Compile Include="Coord2.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="forms\ConfigTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\ConfigTest.Designer.cs">
+      <DependentUpon>ConfigTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="forms\TestData.cs" />
+    <Compile Include="forms\TestRun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\TestRun.Designer.cs">
+      <DependentUpon>TestRun.cs</DependentUpon>
+    </Compile>
     <Compile Include="GameUtils.cs" />
     <Compile Include="InputHandler.cs" />
     <Compile Include="Level.cs" />
@@ -199,6 +212,14 @@
       <Name>Pathfinder Workshop 1Content %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="forms\ConfigTest.resx">
+      <DependentUpon>ConfigTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\TestRun.resx">
+      <DependentUpon>TestRun.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
