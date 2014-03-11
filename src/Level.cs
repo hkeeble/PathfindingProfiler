@@ -47,7 +47,7 @@ namespace Pathfinder
             HandlePlayerMovement();
 
             // Update the pathfinder
-            map.pathfinder.Update(gameTime, map, bot, player);
+            map.pathfinder.Build(bot.GridPosition, player.GridPosition);
 
             // Update bot and player
             bot.Update(gameTime, map, player);

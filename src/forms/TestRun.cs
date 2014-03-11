@@ -48,13 +48,19 @@ namespace Pathfinder
         {
             TestWorker wrkr = sender as TestWorker;
 
-            percLabel.Text = Convert.ToString(args.ProgressPercentage);
+            percLabel.Text = Convert.ToString(Convert.ToInt32(percLabel.Text) + args.ProgressPercentage);
             progressBarTests.Increment(args.ProgressPercentage);
+            this.Refresh();
         }
 
         private void workerComplete(object sender, TestCompletedArgs e)
         {
-            int i = 0;
+            progressBarTests.Value = progressBarTests.Maximum;
+            percLabel.Text = "100";
+            this.Refresh();
+
+            MessageBox.Show("Test completed!", "Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
             // TODO - WHEN TEST IS COMPLETED
         }
 

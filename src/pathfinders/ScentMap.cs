@@ -23,17 +23,19 @@ namespace Pathfinder
         }
 
         private int gridSize;
+        private Map map;
         private string name;
         private ScentBuffer buffer1, buffer2;
         int sourceValue;
 
-        public ScentMap(int gridSize)
+        public ScentMap(int gridSize, Map map)
         {
             name = "Scent Map";
             this.gridSize = gridSize;
             buffer1 = new ScentBuffer(gridSize);
             buffer2 = new ScentBuffer(gridSize);
             sourceValue = 0;
+            this.map = map;
         }
 
         public virtual string GetName()
@@ -41,7 +43,7 @@ namespace Pathfinder
             return name;
         }
 
-        public void Update(GameTime gameTime, Map map, AiBotBase bot, Player player)
+        public void Build(Coord2 startPos, Coord2 targetPos)
         {
             buffer2 = buffer1; // Copy Buffers
 
@@ -57,12 +59,12 @@ namespace Pathfinder
                 {
                     currentLoc = new Coord2(x, y);
                     if (map.ValidPosition(currentLoc)) // Ignore blocked spaces
-                        ProcessLocation(currentLoc, map, player);
+                        ProcessLocation(currentLoc, targetPos);
                 }
             }
 
             // Update data in player's location
-            buffer1.data[player.GridPosition.X, player.GridPosition.Y] = sourceValue;
+            buffer1.data[targetPos.X, targetPos.Y] = sourceValue;
         }
         
         public int HighestValue()
@@ -97,13 +99,13 @@ namespace Pathfinder
             return currentVal;
         }
 
-        private void ProcessLocation(Coord2 location, Map lvl, Player plr)
+        private void ProcessLocation(Coord2 location, Coord2 targetPos)
         {
             Coord2[] neighbours = GetNeighbours(location);
 
             for (int i = 0; i < neighbours.Length; i++)
             {
-                if(lvl.ValidPosition(neighbours[i]) && plr.GridPosition != neighbours[i])
+                if(map.ValidPosition(neighbours[i]) && targetPos != neighbours[i])
                     if (buffer2.data[neighbours[i].X, neighbours[i].Y] > buffer1.data[location.X, location.Y])
                         buffer1.data[location.X, location.Y] = buffer2.data[neighbours[i].X, neighbours[i].Y]-1;
             }

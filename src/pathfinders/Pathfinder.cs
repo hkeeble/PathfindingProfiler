@@ -54,15 +54,15 @@ namespace Pathfinder
     /// </summary>
     interface IPathfinder
     {
-        void Update(GameTime gameTime, Map map, AiBotBase bot, Player player);
+        void Build(Coord2 startPos, Coord2 targetPos);
         void Clear();
         bool IsInPath(int x, int y);
         string GetName();
+
+        // Usually used to retrieve data required for visual representation. These will have very different implementations for each pathfinder.
+        int GetValue(int x, int y);
         int HighestValue();
         int LowestValue();
-
-        // Usually used to retrieve data required for visual representation.
-        int GetValue(int x, int y);
     }
 
 
@@ -77,19 +77,19 @@ namespace Pathfinder
         /// <param name="algorithm">The type of algorithm the pathfinder should use.</param>
         /// <param name="gridSize">The grid size the pathfinder is to work with.</param>
         /// <returns></returns>
-        public static IPathfinder CreatePathfinder(PathfinderAlgorithm algorithm, int gridSize)
+        public static IPathfinder CreatePathfinder(PathfinderAlgorithm algorithm, int gridSize, Map map)
         {
             switch (algorithm)
             {
                 case PathfinderAlgorithm.Dijkstra:
-                    return (IPathfinder)new Dijkstra(gridSize);
+                    return (IPathfinder)new Dijkstra(gridSize, map);
                 case PathfinderAlgorithm.AStar:
-                    return (IPathfinder)new AStar(gridSize);
+                    return (IPathfinder)new AStar(gridSize, map);
                 case PathfinderAlgorithm.ScentMap:
-                    return (IPathfinder)new ScentMap(gridSize);
+                    return (IPathfinder)new ScentMap(gridSize, map);
                 default:
                     Console.WriteLine("PathfinderFactory: Attempted to create unrecognized pathfinder type. Returning Dijkstra.\n");
-                    return (IPathfinder)new Dijkstra(gridSize);
+                    return (IPathfinder)new Dijkstra(gridSize, map);
             }
         }
     }

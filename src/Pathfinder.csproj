@@ -46,7 +46,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>build\debug\</OutputPath>
+    <OutputPath>..\build\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -58,7 +58,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>build\release\</OutputPath>
+    <OutputPath>..\build\release\</OutputPath>
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -131,15 +131,15 @@
     <Compile Include="forms\ConfigTest.Designer.cs">
       <DependentUpon>ConfigTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\TestCompletedEvent.cs" />
-    <Compile Include="forms\TestData.cs" />
+    <Compile Include="testing\TestCompletedEvent.cs" />
+    <Compile Include="testing\TestData.cs" />
     <Compile Include="forms\TestRun.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="forms\TestRun.Designer.cs">
       <DependentUpon>TestRun.cs</DependentUpon>
     </Compile>
-    <Compile Include="forms\TestWorker.cs">
+    <Compile Include="testing\TestWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GameUtils.cs" />

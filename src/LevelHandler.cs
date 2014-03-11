@@ -99,8 +99,12 @@ namespace Pathfinder
             base.Update(gameTime);
         }
 
-        public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 botPos, Coord2 targetPos)
+        public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 startPos, Coord2 targetPos)
         {
+            Level.SetPathfindingAlgorithm(algorithm);
+
+            Level.Map.pathfinder.Build(startPos, targetPos);
+
             return new TestResult();
         }
 

@@ -50,7 +50,7 @@ namespace Pathfinder
         public void SetPathfinder(PathfinderAlgorithm algorithm)
         {
             this.algorithm = algorithm;
-            pathfinder = PathfinderFactory.CreatePathfinder(algorithm, gridSize);
+            pathfinder = PathfinderFactory.CreatePathfinder(algorithm, gridSize, this);
             Console.WriteLine("Map.cs: Pathfinding algorithm set to " + pathfinder.GetName() + ".\n");
         }
 

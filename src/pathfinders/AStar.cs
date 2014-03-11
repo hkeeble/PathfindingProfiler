@@ -12,7 +12,7 @@ namespace Pathfinder
 {
     class AStar : Dijkstra
     {
-        public AStar(int gridSize) : base(gridSize)
+        public AStar(int gridSize, Map map) : base(gridSize, map)
         {
             nodes = new NodeCollection(gridSize);
             Name = "A Star";

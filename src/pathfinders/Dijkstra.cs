@@ -12,8 +12,8 @@ namespace Pathfinder
         protected string Name { get; set; }
 
         protected Map map;
-        protected AiBotBase bot;
-        protected Player plr;
+        protected Coord2 startPos;
+        protected Coord2 targetPos;
 
         protected List<Coord2> path;
 
@@ -26,13 +26,14 @@ namespace Pathfinder
 
         private Profile profile;
 
-        public Dijkstra(int gridSize)
+        public Dijkstra(int gridSize, Map map)
         {
             Name = "Dijkstra";
             profile = new Profile("Dijkstra Path Time");
             GridSize = gridSize;
             nodes = new NodeCollection(gridSize);
             path = new List<Coord2>();
+            this.map = map;
         }
 
         public virtual string GetName()
@@ -40,27 +41,25 @@ namespace Pathfinder
             return Name;
         }
 
-        public void Update(GameTime gameTime, Map map, AiBotBase bot, Player plr)
+        public void Build(Coord2 startPos, Coord2 targetPos)
         {
             if(InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
-                profile.Start(gameTime);
-                this.map = map;
-                this.bot = bot;
-                this.plr = plr;
+                this.startPos = startPos;
+                this.targetPos = targetPos;
                 path = new List<Coord2>();
 
                 nodes = new NodeCollection(GridSize);
 
                 // Initialize bot position
-                nodes.Get(bot.GridPosition.X, bot.GridPosition.Y).cost = 0;
+                nodes.Get(startPos.X, startPos.Y).cost = 0;
                 bool firstLoop = true;
 
-                while (nodes.Get(plr.GridPosition.X, plr.GridPosition.Y).closed == false)
+                while (nodes.Get(targetPos.X, targetPos.Y).closed == false)
                 {
                     if (firstLoop)
                     {
-                        currentLowestPos = bot.GridPosition;
+                        currentLowestPos = startPos;
                         firstLoop = false;
                     }
                     else
@@ -78,7 +77,6 @@ namespace Pathfinder
 
                 // Trace the completed path
                 TracePath();
-                profile.End(gameTime);
             }
         }
 
@@ -99,7 +97,7 @@ namespace Pathfinder
 
         private void FindLowestCost()
         {
-            currentLowestPos = plr.GridPosition;
+            currentLowestPos = targetPos;
 
             for (int x = 0; x < GridSize; x++)
             {
@@ -140,13 +138,13 @@ namespace Pathfinder
         protected void TracePath()
         {
             bool done = false;
-            Coord2 nextClosed = plr.GridPosition;
+            Coord2 nextClosed = targetPos;
             while (!done)
             {
                 nodes.Get(nextClosed.X, nextClosed.Y).inPath = true;
                 path.Add(nextClosed);
                 nextClosed = nodes.Get(nextClosed.X, nextClosed.Y).link;
-                if (nextClosed == bot.GridPosition)
+                if (nextClosed == startPos)
                     done = true;
             }
         }
