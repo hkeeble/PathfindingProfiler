@@ -16,7 +16,7 @@ namespace Pathfinder
     /// </summary>
     public class Map
     {
-        private const int gridSize = 40;
+        private int gridSize;
         public int [,] tiles;
 
         private Texture2D tile1Texture;
@@ -91,8 +91,14 @@ namespace Pathfinder
             List<string> lines = new List<string>();
             using (StreamReader reader = new StreamReader(path))
             {
+                // Read in the size of the map
                 string line = reader.ReadLine();
-                //Debug.Assert(line.Length == gridSize, "loaded map string line width must be 30");
+                gridSize = line.Length;
+                tiles = new int[gridSize, gridSize];
+                for (int i = 0; i < gridSize; i++)
+                    for (int j = 0; j < gridSize; j++)
+                        tiles[i, j] = 0;
+
                 Debug.Assert(line.Length == gridSize, String.Format("loaded map string line width must be {0}.", gridSize));
                 while (line != null)
                 {

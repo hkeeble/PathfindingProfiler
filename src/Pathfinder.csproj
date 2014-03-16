@@ -131,6 +131,13 @@
     <Compile Include="forms\ConfigTest.Designer.cs">
       <DependentUpon>ConfigTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="forms\FormUtil.cs" />
+    <Compile Include="forms\GenerateMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\GenerateMap.Designer.cs">
+      <DependentUpon>GenerateMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="testing\TestCompletedEvent.cs" />
     <Compile Include="testing\TestData.cs" />
     <Compile Include="forms\TestRun.cs">
@@ -220,6 +227,9 @@
   <ItemGroup>
     <EmbeddedResource Include="forms\ConfigTest.resx">
       <DependentUpon>ConfigTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forms\GenerateMap.resx">
+      <DependentUpon>GenerateMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\TestRun.resx">
       <DependentUpon>TestRun.cs</DependentUpon>

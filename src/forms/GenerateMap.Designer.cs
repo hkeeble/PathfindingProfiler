@@ -38,6 +38,7 @@
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.buttonGenerate = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPercBlocked)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,12 +78,12 @@
             // 
             this.numericUpDownPercBlocked.Location = new System.Drawing.Point(105, 64);
             this.numericUpDownPercBlocked.Maximum = new decimal(new int[] {
-            90,
+            50,
             0,
             0,
             0});
             this.numericUpDownPercBlocked.Name = "numericUpDownPercBlocked";
-            this.numericUpDownPercBlocked.Size = new System.Drawing.Size(52, 20);
+            this.numericUpDownPercBlocked.Size = new System.Drawing.Size(40, 20);
             this.numericUpDownPercBlocked.TabIndex = 4;
             // 
             // label3
@@ -118,6 +119,7 @@
             this.buttonGenerate.TabIndex = 8;
             this.buttonGenerate.Text = "Generate Map";
             this.buttonGenerate.UseVisualStyleBackColor = true;
+            this.buttonGenerate.Click += new System.EventHandler(this.buttonGenerate_Click);
             // 
             // buttonCancel
             // 
@@ -129,11 +131,21 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(151, 66);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(15, 13);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "%";
+            // 
             // GenerateMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(271, 143);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonGenerate);
             this.Controls.Add(this.textBoxName);
@@ -168,5 +180,6 @@
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Button buttonGenerate;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -116,7 +116,7 @@ namespace Pathfinder
                                 if (map.pathfinder.GetValue(x, y) == 0)
                                     sb.Draw(map.Tile1Texture, pos, Color.White);
                                 else
-                                    sb.Draw(map.Tile1Texture, pos, Color.Blue);
+                                    sb.Draw(map.Tile1Texture, pos, Color.LightBlue);
                             }
                         }
                         else

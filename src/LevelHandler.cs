@@ -119,5 +119,6 @@ namespace Pathfinder
         }
 
         public static Level Level { get { return level; } }
+        public static int MapGridSize { get { return level.Map.GridSize; } }
     }
 }

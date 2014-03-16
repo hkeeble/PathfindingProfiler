@@ -19,7 +19,8 @@ namespace Pathfinder
         OpenAStar,
         OpenScentAlgorithm,
         OpenMapFile,
-        OpenTestConfig
+        OpenTestConfig,
+        OpenGenerateMap
     }
 
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
@@ -60,6 +61,9 @@ namespace Pathfinder
 
         // The test configuration window
         ConfigTest testConfigBox;
+
+        // Generate map window
+        GenerateMap mapGen;
 
         public Menu(Game game)
             : base(game)
@@ -114,6 +118,9 @@ namespace Pathfinder
             // Create test configuration button
             buttons.Add(new Button(new Vector2(centerX - ((Game.Window.ClientBounds.Width - 120) / 2), Game.Window.ClientBounds.Height - 150), new Vector2(Game.Window.ClientBounds.Width - 120, textBoxDims.Y),
                 buttonTexture, "Configure Test", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenTestConfig));
+            
+            buttons.Add(new Button(new Vector2(centerX - ((Game.Window.ClientBounds.Width - 120) / 2), Game.Window.ClientBounds.Height - 100), new Vector2(Game.Window.ClientBounds.Width - 120, textBoxDims.Y),
+                buttonTexture, "Generate Map", buttonFont, Color.White, Color.Yellow, MenuCommand.OpenGenerateMap));
 
             // Calculate positions
             titlePos = new Vector2((Game.Window.ClientBounds.Width / 2) - (titleFont.MeasureString(title).X / 2), 0);
@@ -161,13 +168,20 @@ namespace Pathfinder
                             if (LoadMap())
                                 RunTestConfig();
                         }
+                        else if (b.Command == MenuCommand.OpenGenerateMap)
+                            RunGenerateMap();
                         else
                             Console.WriteLine("Unrecognized menu button command called.\n");
                     }
                 }
             }
             else
-                testConfigBox.Activate(); // If not active, keep focus on the configuration box
+            {
+                if (testConfigBox != null)
+                    testConfigBox.Activate(); // If not active, keep focus on the configuration box
+                else if (mapGen != null)
+                    mapGen.Activate();
+            }
 
             base.Update(gameTime);
          }
@@ -250,15 +264,23 @@ namespace Pathfinder
             }
         }
 
+        private void RunGenerateMap()
+        {
+            mapGen = new GenerateMap();
+            mapGen.FormClosed += new FormClosedEventHandler(dialogClosed);
+            mapGen.Show();
+            isActive = false;
+        }
+
         private void RunTestConfig()
         {
             testConfigBox = new ConfigTest();
-            testConfigBox.FormClosed += new FormClosedEventHandler(configBoxClosed);
+            testConfigBox.FormClosed += new FormClosedEventHandler(dialogClosed);
             testConfigBox.Show();
             isActive = false;
         }
 
-        private void configBoxClosed(object sender, FormClosedEventArgs args)
+        private void dialogClosed(object sender, FormClosedEventArgs args)
         {
             isActive = true;
         }

@@ -12,19 +12,11 @@ namespace Pathfinder
     class FormUtil
     {
         /// <summary>
-        /// Converts the text in a textbox into an integer value and returns the result.
+        /// Converts the text in a control into an integer value and returns the result.
         /// </summary>
-        public static int GetIntegerValue(System.Windows.Forms.TextBox tb)
+        public static int GetIntegerValue(Control c)
         {
-            return Convert.ToInt32(tb.Text);
-        }
-
-        /// <summary>
-        /// Converts the text in a combobox into an integer value and returns the result.
-        /// </summary>
-        public static int GetIntegerValue(ComboBox cb)
-        {
-            return Convert.ToInt32(cb.Text);
+            return Convert.ToInt32(c.Text);
         }
     }
 }

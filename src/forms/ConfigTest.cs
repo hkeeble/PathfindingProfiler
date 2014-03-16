@@ -50,7 +50,7 @@ namespace Pathfinder
             {
                 valid = false;
                 errorText += ERROR_MSG.NO_AVG_DIST;
-            } else if (GetIntegerValue(textBoxDistance) == 0) {
+            } else if (FormUtil.GetIntegerValue(textBoxDistance) == 0) {
                 valid = false;
                 errorText += ERROR_MSG.DIST_IS_ZERO;
             }
@@ -65,7 +65,7 @@ namespace Pathfinder
             {
                 valid = false;
                 errorText += ERROR_MSG.NO_NUMBER_OF_RUNS;
-            } else if (GetIntegerValue(comboBoxNumOfTestRuns) == 0) {
+            } else if (FormUtil.GetIntegerValue(comboBoxNumOfTestRuns) == 0) {
                 valid = false;
                 errorText += ERROR_MSG.RUNS_IS_ZERO;
             }
@@ -74,22 +74,6 @@ namespace Pathfinder
                 MessageBox.Show("Invalid input: \n" + errorText, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             return valid;
-        }
-
-        /// <summary>
-        /// Converts the text in a textbox into an integer value and returns the result.
-        /// </summary>
-        private int GetIntegerValue(System.Windows.Forms.TextBox tb)
-        {
-            return Convert.ToInt32(tb.Text);
-        }
-
-        /// <summary>
-        /// Converts the text in a combobox into an integer value and returns the result.
-        /// </summary>
-        private int GetIntegerValue(ComboBox cb)
-        {
-            return Convert.ToInt32(cb.Text);
         }
 
         private void buttonRun_Click(object sender, EventArgs e)
