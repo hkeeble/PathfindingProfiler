@@ -80,22 +80,26 @@ namespace Pathfinder
             }
         }
 
-        protected Coord2[] GetNeighbours(Coord2 location)
+        protected virtual List<Coord2> GetNeighbours(Coord2 location)
         {
-            Coord2[] neighbours = new Coord2[8];
-            neighbours[0] = new Coord2(location.X + 1, location.Y + 1);
-            neighbours[1] = new Coord2(location.X - 1, location.Y - 1);
-            neighbours[2] = new Coord2(location.X - 1, location.Y + 1);
-            neighbours[3] = new Coord2(location.X + 1, location.Y - 1);
-            neighbours[4] = new Coord2(location.X, location.Y + 1);
-            neighbours[5] = new Coord2(location.X + 1, location.Y);
-            neighbours[6] = new Coord2(location.X - 1, location.Y);
-            neighbours[7] = new Coord2(location.X, location.Y - 1);
+            List<Coord2> neighbours = new List<Coord2>();
+
+            // Diagonal neighbours
+            neighbours.Add(new Coord2(location.X + 1, location.Y + 1));
+            neighbours.Add(new Coord2(location.X - 1, location.Y - 1));
+            neighbours.Add(new Coord2(location.X - 1, location.Y + 1));
+            neighbours.Add(new Coord2(location.X + 1, location.Y - 1));
+
+            // Horizontal neighbours
+            neighbours.Add(new Coord2(location.X, location.Y + 1));
+            neighbours.Add(new Coord2(location.X + 1, location.Y));
+            neighbours.Add(new Coord2(location.X - 1, location.Y));
+            neighbours.Add(new Coord2(location.X, location.Y - 1));
 
             return neighbours;
         }
 
-        private void FindLowestCost()
+        protected virtual void FindLowestCost()
         {
             currentLowestPos = targetPos;
 

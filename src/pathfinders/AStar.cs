@@ -31,13 +31,29 @@ namespace Pathfinder
                     else
                         costToAdd = HV_COST;
 
-                   float newCost = nodes.Get(pos.X, pos.Y).cost + costToAdd + manhattanDist(neighbours[i], currentLowestPos);
+                   float newCost = nodes.Get(pos.X, pos.Y).cost + costToAdd;
 
                    if (newCost < nodes.Get(neighbours[i].X, neighbours[i].Y).cost)
                    {
                        nodes.Get(neighbours[i].X, neighbours[i].Y).cost = newCost;
                        nodes.Get(neighbours[i].X, neighbours[i].Y).link = pos;
                    }
+                }
+            }
+        }
+
+        protected override void FindLowestCost()
+        {
+            currentLowestPos = targetPos;
+
+            for (int x = 0; x < GridSize; x++)
+            {
+                for (int y = 0; y < GridSize; y++)
+                {
+                    // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
+                    if (nodes.Get(currentLowestPos.X, currentLowestPos.Y).cost + manhattanDist(currentLowestPos, targetPos) >= nodes.Get(x, y).cost + manhattanDist(new Coord2(x, y), targetPos) &&
+                        nodes.Get(x, y).closed == false && map.ValidPosition(new Coord2(x, y)))
+                        currentLowestPos = new Coord2(x, y);
                 }
             }
         }
