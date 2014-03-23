@@ -53,9 +53,6 @@ namespace Pathfinder
         Vector2 algorithmsTitlePos;
         Vector2 testTitlePos;
 
-        // The currently loaded map
-        Map currentMap;
-
         // Is the menu currently active?
         bool isActive;
 
@@ -147,19 +144,21 @@ namespace Pathfinder
                     {
                         if (b.Command == MenuCommand.OpenDijkstra || b.Command == MenuCommand.OpenAStar || b.Command == MenuCommand.OpenJPS)
                         {
-                            LoadMap();
-                            if (b.Command == MenuCommand.OpenDijkstra)
-                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
-                            else if (b.Command == MenuCommand.OpenAStar)
-                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.AStar);
-                            else if (b.Command == MenuCommand.OpenJPS)
-                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.JPS);
-                            else
+                            if (LoadMap())
                             {
-                                Console.WriteLine("Menu.cs: Error, attempted to set unrecognized pathfinding algorithm. Defaulting to Dijkstra.");
-                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
+                                if (b.Command == MenuCommand.OpenDijkstra)
+                                    LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
+                                else if (b.Command == MenuCommand.OpenAStar)
+                                    LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.AStar);
+                                else if (b.Command == MenuCommand.OpenJPS)
+                                    LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.JPS);
+                                else
+                                {
+                                    Console.WriteLine("Menu.cs: Error, attempted to set unrecognized pathfinding algorithm. Defaulting to Dijkstra.");
+                                    LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
+                                }
+                                Main.SetState(typeof(LevelHandler));
                             }
-                            Main.SetState(typeof(LevelHandler));
                         }
                         else if (b.Command == MenuCommand.OpenMapFile)
                             OpenMap();

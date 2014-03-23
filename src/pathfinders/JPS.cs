@@ -117,7 +117,7 @@ namespace Pathfinder
                         return newLoc;
             }
 
-            // If no forced neighbout, resursively call into new jump point
+            // If no forced neighbour, resursively call into new jump point
             return Jump(newLoc, dir);
         }
 
