@@ -31,6 +31,9 @@ namespace Pathfinder
         private Color NEIGHBOUR_COLOR = Color.Green;
         private Color PATH_COLOR      = Color.Red;
 
+        // Lines drawn to connect nodes within the path
+        List<Line> pathConnectors;
+
         public Dijkstra(int gridSize, Map map)
         {
             Name = "Dijkstra";

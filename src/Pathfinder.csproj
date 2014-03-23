@@ -138,6 +138,7 @@
     <Compile Include="forms\GenerateMap.Designer.cs">
       <DependentUpon>GenerateMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="Line.cs" />
     <Compile Include="map\Tile.cs" />
     <Compile Include="pathfinders\JPS.cs" />
     <Compile Include="testing\TestCompletedEvent.cs" />
