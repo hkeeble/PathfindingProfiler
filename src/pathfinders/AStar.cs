@@ -17,25 +17,25 @@ namespace Pathfinder
             Name = "A Star";
         }
 
-        protected override void RecalculateCosts(List<Coord2> neighbours, Coord2 pos)
+        protected override void RecalculateCosts(List<Node> neighbours, Node node)
         {
             for (int i = 0; i < neighbours.Count; i++)
             {
-                if(map.ValidPosition(neighbours[i]) && nodes.Get(neighbours[i].X, neighbours[i].Y).closed == false)
+                if(map.ValidPosition(neighbours[i].position) && neighbours[i].closed == false)
                 {
                     float costToAdd = 0.0f;
 
-                    if (neighbours[i].X != 0 && neighbours[i].Y != 0)
+                    if (neighbours[i].position.X != 0 && neighbours[i].position.Y != 0)
                         costToAdd = D_COST;
                     else
                         costToAdd = HV_COST;
 
-                   float newCost = nodes.Get(pos.X, pos.Y).cost + costToAdd;
+                   float newCost = nodes.Get(node.position.X, node.position.Y).cost + costToAdd;
 
-                   if (newCost < nodes.Get(neighbours[i].X, neighbours[i].Y).cost)
+                   if (newCost < neighbours[i].cost)
                    {
-                       nodes.Get(neighbours[i].X, neighbours[i].Y).cost = newCost;
-                       nodes.Get(neighbours[i].X, neighbours[i].Y).link = pos;
+                       neighbours[i].cost = newCost;
+                       neighbours[i].parent = node;
                    }
                 }
             }
@@ -43,16 +43,16 @@ namespace Pathfinder
 
         protected override void FindLowestCost()
         {
-            currentLowestPos = targetPos;
+            currentLowest = target;
 
             for (int x = 0; x < GridSize; x++)
             {
                 for (int y = 0; y < GridSize; y++)
                 {
                     // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
-                    if (nodes.Get(currentLowestPos.X, currentLowestPos.Y).cost + manhattanDist(currentLowestPos, targetPos) >= nodes.Get(x, y).cost + manhattanDist(new Coord2(x, y), targetPos) &&
+                    if (nodes.Get(currentLowest.position.X, currentLowest.position.Y).cost + manhattanDist(currentLowest.position, target.position) >= nodes.Get(x, y).cost + manhattanDist(new Coord2(x, y), target.position) &&
                         nodes.Get(x, y).closed == false && map.ValidPosition(new Coord2(x, y)))
-                        currentLowestPos = new Coord2(x, y);
+                        currentLowest = nodes.Get(x, y);
                 }
             }
         }

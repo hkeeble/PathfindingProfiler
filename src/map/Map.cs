@@ -75,11 +75,44 @@ namespace Pathfinder
         /// <returns></returns>
         public bool ValidPosition(Coord2 pos)
         {
-            if (pos.X < 0) return false;
-            if (pos.X >= gridSize) return false;
-            if (pos.Y < 0) return false;
-            if (pos.Y >= gridSize) return false;
-            return (!tiles[pos.X,pos.Y].IsBlocked);
+            if (!IsWithinMap(pos)) return false;
+            if (IsBlocked(pos))    return false;
+            else                   return true;
+        }
+
+        /// <summary>
+        /// Returns whether or not the given position is blocked. Does not ensure given positon is within the map. Returns false if position is
+        /// out of map bounds.
+        /// </summary>
+        /// <param name="pos">Position to check for block</param>
+        /// <returns></returns>
+        public bool IsBlocked(Coord2 pos)
+        {
+            if(IsWithinMap(pos))
+                return (tiles[pos.X, pos.Y].IsBlocked);
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Integer override for <c>IsBlocked(Coord2 pos)</c>.
+        /// </summary>
+        /// <see cref="Pathfinder.Map.IsBlocked(Coord2 pos)"/>
+        /// <param name="x">X Coordinate</param>
+        /// <param name="y">Y Coordinate</param>
+        /// <returns></returns>
+        public bool IsBlocked(int x, int y)
+        {
+            return IsBlocked(new Coord2(x, y));
+        }
+
+        public bool IsWithinMap(Coord2 pos)
+        {
+            if (pos.X < 0)          return false;
+            if (pos.X >= gridSize)  return false;
+            if (pos.Y < 0)          return false;
+            if (pos.Y >= gridSize)  return false;
+            else                    return true;
         }
 
         /// <summary>

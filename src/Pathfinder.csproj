@@ -160,7 +160,7 @@
     <Compile Include="menu\Button.cs" />
     <Compile Include="menu\Menu.cs" />
     <Compile Include="menu\TextMenuItem.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="pathfinders\Node.cs" />
     <Compile Include="pathfinders\AStar.cs" />
     <Compile Include="pathfinders\Dijkstra.cs" />
     <Compile Include="pathfinders\Pathfinder.cs" />

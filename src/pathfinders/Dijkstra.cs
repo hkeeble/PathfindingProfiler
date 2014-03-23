@@ -12,8 +12,8 @@ namespace Pathfinder
         protected string Name { get; set; }
 
         protected Map map;
-        protected Coord2 startPos;
-        protected Coord2 targetPos;
+        protected Node start;
+        protected Node target;
 
         protected List<Coord2> path;
 
@@ -22,7 +22,7 @@ namespace Pathfinder
         protected const float HV_COST = 1.0f;
         protected const float D_COST = 1.4f;
 
-        protected Coord2 currentLowestPos;
+        protected Node currentLowest;
 
         private Profile profile;
 
@@ -50,38 +50,38 @@ namespace Pathfinder
         {
             if(InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
-                this.startPos = startPos;
-                this.targetPos = targetPos;
                 path = new List<Coord2>();
-
                 nodes = new NodeCollection(GridSize);
 
+                this.start = nodes.Get(startPos);
+                this.target = nodes.Get(targetPos);
+
                 // Initialize bot position
-                nodes.Get(startPos.X, startPos.Y).cost = 0;
+                nodes.Get(startPos).cost = 0;
                 bool firstLoop = true;
 
-                while (nodes.Get(targetPos.X, targetPos.Y).closed == false)
+                while (nodes.Get(targetPos).closed == false)
                 {
                     if (firstLoop)
                     {
-                        currentLowestPos = startPos;
+                        currentLowest = start;
                         firstLoop = false;
                     }
                     else
                         FindLowestCost(); // Find lowest cost
 
                     // Mark lowest cost as closed
-                    nodes.Get(currentLowestPos.X, currentLowestPos.Y).closed = true;
-                    map.SetRenderColor(currentLowestPos, CLOSED_COLOR);
+                    currentLowest.closed = true;
+                    map.SetRenderColor(currentLowest.position, CLOSED_COLOR);
 
                     // Find the neigbour positions
-                    List<Coord2> neighbours = GetNeighbours(currentLowestPos);
+                    List<Node> neighbours = GetNeighours(currentLowest);
 
                     // Update visualization
                     UpdateVisualization(neighbours);
 
                     // Recalculate Costs
-                    RecalculateCosts(neighbours, currentLowestPos);
+                    RecalculateCosts(neighbours, currentLowest);
                 }
 
                 // Trace the completed path
@@ -89,76 +89,90 @@ namespace Pathfinder
             }
         }
 
+        protected virtual List<Node> GetNeighours(Node node)
+        {
+            List<Node> list = new List<Node>();
+
+            // Horizontal and vertical
+            if (nodes.IsValid(node.position + new Coord2(1, 0)))
+                list.Add(nodes.Get(node.position + new Coord2(1, 0)));
+
+            if (nodes.IsValid(node.position + new Coord2(-1, 0)))
+                list.Add(nodes.Get(node.position + new Coord2(-1, 0)));
+
+            if (nodes.IsValid(node.position + new Coord2(0, 1)))
+                list.Add(nodes.Get(node.position + new Coord2(0, 1)));
+
+            if (nodes.IsValid(node.position + new Coord2(0, -1)))
+                list.Add(nodes.Get(node.position + new Coord2(0, -1)));
+
+            // Diagonal
+            if (nodes.IsValid(node.position + new Coord2(1, 1)))
+                list.Add(nodes.Get(node.position + new Coord2(1, 1)));
+
+            if (nodes.IsValid(node.position + new Coord2(-1, -1)))
+                list.Add(nodes.Get(node.position + new Coord2(-1, -1)));
+
+            if (nodes.IsValid(node.position + new Coord2(1, -1)))
+                list.Add(nodes.Get(node.position + new Coord2(1, -1)));
+
+            if (nodes.IsValid(node.position + new Coord2(-1, 1)))
+                list.Add(nodes.Get(node.position + new Coord2(-1, 1)));
+
+            return list;
+        }
+
         /// <summary>
         /// Updates the current visualization.
         /// </summary>
         /// <param name="currentNeighbours">The neighbours on the current search iteration.</param>
-        protected virtual void UpdateVisualization(List<Coord2> currentNeighbours)
+        protected virtual void UpdateVisualization(List<Node> currentNeighbours)
         {
             for (int i = 0; i < currentNeighbours.Count; i++)
             {
-                if(map.ValidPosition(currentNeighbours[i]))
+                if(map.ValidPosition(currentNeighbours[i].position))
                 {
-                    if (nodes.Get(currentNeighbours[i].X, currentNeighbours[i].Y).closed == false)
-                        map.SetRenderColor(currentNeighbours[i], NEIGHBOUR_COLOR); 
+                    if (currentNeighbours[i].closed == false)
+                        map.SetRenderColor(currentNeighbours[i].position, NEIGHBOUR_COLOR); 
                 }
             }
         }
 
-        protected virtual List<Coord2> GetNeighbours(Coord2 location)
-        {
-            List<Coord2> neighbours = new List<Coord2>();
-
-            // Diagonal neighbours
-            neighbours.Add(new Coord2(location.X + 1, location.Y + 1));
-            neighbours.Add(new Coord2(location.X - 1, location.Y - 1));
-            neighbours.Add(new Coord2(location.X - 1, location.Y + 1));
-            neighbours.Add(new Coord2(location.X + 1, location.Y - 1));
-
-            // Horizontal neighbours
-            neighbours.Add(new Coord2(location.X, location.Y + 1));
-            neighbours.Add(new Coord2(location.X + 1, location.Y));
-            neighbours.Add(new Coord2(location.X - 1, location.Y));
-            neighbours.Add(new Coord2(location.X, location.Y - 1));
-
-            return neighbours;
-        }
-
         protected virtual void FindLowestCost()
         {
-            currentLowestPos = targetPos;
+            currentLowest = target;
 
             for (int x = 0; x < GridSize; x++)
             {
                 for (int y = 0; y < GridSize; y++)
                 {
                     // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
-                    if (nodes.Get(currentLowestPos.X, currentLowestPos.Y).cost >= nodes.Get(x, y).cost && nodes.Get(x, y).closed == false &&
+                    if (nodes.Get(currentLowest.position).cost >= nodes.Get(x, y).cost && nodes.Get(x, y).closed == false &&
                         map.ValidPosition(new Coord2(x, y)))
-                            currentLowestPos = new Coord2(x, y);
+                            currentLowest = nodes.Get(x, y);
                 }
             }
         }
 
-        protected virtual void RecalculateCosts(List<Coord2> neighbours, Coord2 pos)
+        protected virtual void RecalculateCosts(List<Node> neighbours, Node node)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < neighbours.Count; i++)
             {
-                if(map.ValidPosition(neighbours[i]) && nodes.Get(neighbours[i].X, neighbours[i].Y).closed == false)
+                if(map.ValidPosition(neighbours[i].position) && neighbours[i].closed == false)
                 {
                     float costToAdd = 0.0f;
 
-                    if (neighbours[i].X != 0 && neighbours[i].Y != 0)
+                    if (neighbours[i].position.X != 0 && neighbours[i].position.Y != 0)
                         costToAdd = D_COST;
                     else
                         costToAdd = HV_COST;
 
-                   float newCost = nodes.Get(pos.X, pos.Y).cost + costToAdd;
+                   float newCost = nodes.Get(node.position).cost + costToAdd;
 
-                   if (newCost < nodes.Get(neighbours[i].X, neighbours[i].Y).cost)
+                   if (newCost < neighbours[i].cost)
                    {
-                       nodes.Get(neighbours[i].X, neighbours[i].Y).cost = newCost;
-                       nodes.Get(neighbours[i].X, neighbours[i].Y).link = pos;
+                       neighbours[i].cost = newCost;
+                       neighbours[i].parent = node;
                    }
                 }
             }
@@ -167,14 +181,14 @@ namespace Pathfinder
         protected void TracePath()
         {
             bool done = false;
-            Coord2 nextClosed = targetPos;
+            Coord2 nextClosed = target.position;
             while (!done)
             {
-                nodes.Get(nextClosed.X, nextClosed.Y).inPath = true;
+                nodes.Get(nextClosed).inPath = true;
                 path.Add(nextClosed);
-                nextClosed = nodes.Get(nextClosed.X, nextClosed.Y).link;
+                nextClosed = nodes.Get(nextClosed).parent.position;
                 map.SetRenderColor(nextClosed, PATH_COLOR);
-                if (nextClosed == startPos)
+                if (nextClosed == start.position)
                     done = true;
             }
         }

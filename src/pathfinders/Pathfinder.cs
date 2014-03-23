@@ -67,7 +67,6 @@ namespace Pathfinder
         int LowestValue();
     }
 
-
     /// <summary>
     /// Factory class used to instantiate pathfinders.
     /// </summary>

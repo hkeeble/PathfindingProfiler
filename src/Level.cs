@@ -92,7 +92,7 @@ namespace Pathfinder
 
         // Set Accessors
         public Map Map { set { map = value; } get { return map; } }
-        public Player Player { set { player = value; } }
-        public AiBotBase Bot { set { bot = value; } }
+        public Player Player { set { player = value; } get { return player; } }
+        public AiBotBase Bot { set { bot = value; } get { return bot; } }
     }
 }

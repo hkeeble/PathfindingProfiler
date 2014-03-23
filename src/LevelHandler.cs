@@ -125,7 +125,11 @@ namespace Pathfinder
                 if (InputHandler.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 {
                     if (MessageBox.Show("Return to the menu?", "Return to Menu", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
                         Main.SetState(typeof(Menu));
+                        SetBotPosition(new Coord2(0, 0));
+                        SetPlayerPosition(new Coord2(1, 0));
+                    }
                 }
 
                 // Check for mouse clicks
@@ -135,12 +139,21 @@ namespace Pathfinder
                     {
                         ClearAll();
 
-                        Point mp = new Point(InputHandler.MousePosition().X / level.Map.TileSize, InputHandler.MousePosition().Y / level.Map.TileSize);
+                        Coord2 mp = new Coord2(InputHandler.MousePosition().X / level.Map.TileSize, InputHandler.MousePosition().Y / level.Map.TileSize);
 
-                        if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton))
-                            level.SetPlayerPosition(new Coord2(mp.X, mp.Y));
-                        else
-                            level.SetBotPosition(new Coord2(mp.X, mp.Y));
+                        if (level.Map.ValidPosition(mp))
+                        {
+                            if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton))
+                            {
+                                if (level.Bot.GridPosition != mp)
+                                    level.SetPlayerPosition(mp);
+                            }
+                            else
+                            {
+                                if (level.Player.GridPosition != mp)
+                                    level.SetBotPosition(mp);
+                            }
+                        }
                     }
                 }
 
