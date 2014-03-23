@@ -84,68 +84,10 @@ namespace Pathfinder
         public void Draw(SpriteBatch sb)
         {
             sb.Begin();
-            DrawGrid(sb);
+            map.Draw(sb);
             bot.Draw(sb);
             player.Draw(sb);
             sb.End();
-        }
-
-        /// <summary>
-        /// Draws the grid and any neccesary pathfinding visual representation.
-        /// </summary>
-        /// <param name="sb">The spritebatch to use.</param>
-        public void DrawGrid(SpriteBatch sb)
-        {
-            int sz = map.GridSize;
-
-            // Draw grid the same way for both dijkstra and astar
-            if (map.PathfindingAlgorithm == PathfinderAlgorithm.Dijkstra || map.PathfindingAlgorithm == PathfinderAlgorithm.AStar)
-            {
-                for (int x = 0; x < sz; x++)
-                {
-                    for (int y = 0; y < sz; y++)
-                    {
-                        Coord2 pos = new Coord2((x * 15), (y * 15));
-
-                        if (map.tiles[x, y] == 0)
-                        {
-                            if (map.pathfinder.IsInPath(x, y) == true)
-                                sb.Draw(map.Tile1Texture, pos, Color.Red);
-                            else
-                            {
-                                if (map.pathfinder.GetValue(x, y) == 0)
-                                    sb.Draw(map.Tile1Texture, pos, Color.White);
-                                else
-                                    sb.Draw(map.Tile1Texture, pos, Color.LightBlue);
-                            }
-                        }
-                        else
-                            sb.Draw(map.Tile2Texture, pos, Color.White);
-                    }
-                }
-            }
-            else if (map.PathfindingAlgorithm == PathfinderAlgorithm.ScentMap)
-            {
-                int highestValue = map.pathfinder.HighestValue();
-
-                for (int x = 0; x < sz; x++)
-                {
-                    for (int y = 0; y < sz; y++)
-                    {
-                        Coord2 pos = new Coord2((x * 15), (y * 15));
-
-                        if (map.tiles[x, y] == 0)
-                        {
-                            if (map.pathfinder.IsInPath(x, y) == true)
-                                sb.Draw(map.Tile1Texture, pos, Color.Red);
-                            else
-                                sb.Draw(map.Tile1Texture, pos, Color.Lerp(Color.White, Color.Red, map.pathfinder.GetValue(x, y)/highestValue));
-                        }
-                        else
-                            sb.Draw(map.Tile2Texture, pos, Color.White);
-                    }
-                }
-            }
         }
 
         // Set Accessors

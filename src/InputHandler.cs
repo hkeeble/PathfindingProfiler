@@ -135,5 +135,11 @@ namespace Pathfinder
                 return false;
             }
         }
+
+        /* Returns whether or not the mouse is currently contained within the window bounds */
+        public static bool IsMouseInWindow(Rectangle windowBounds)
+        {
+            return windowBounds.Contains(MousePosition());
+        }
     }
 }

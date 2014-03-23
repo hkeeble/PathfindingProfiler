@@ -26,6 +26,11 @@ namespace Pathfinder
 
         private Profile profile;
 
+        // Visualization Colors
+        private Color CLOSED_COLOR    = Color.Cyan;
+        private Color NEIGHBOUR_COLOR = Color.Green;
+        private Color PATH_COLOR      = Color.Red;
+
         public Dijkstra(int gridSize, Map map)
         {
             Name = "Dijkstra";
@@ -41,7 +46,7 @@ namespace Pathfinder
             return Name;
         }
 
-        public void Build(Coord2 startPos, Coord2 targetPos)
+        public virtual void Build(Coord2 startPos, Coord2 targetPos)
         {
             if(InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
             {
@@ -67,9 +72,13 @@ namespace Pathfinder
 
                     // Mark lowest cost as closed
                     nodes.Get(currentLowestPos.X, currentLowestPos.Y).closed = true;
+                    map.SetRenderColor(currentLowestPos, CLOSED_COLOR);
 
                     // Find the neigbour positions
-                    Coord2[] neighbours = GetNeighbours(currentLowestPos);
+                    List<Coord2> neighbours = GetNeighbours(currentLowestPos);
+
+                    // Update visualization
+                    UpdateVisualization(neighbours);
 
                     // Recalculate Costs
                     RecalculateCosts(neighbours, currentLowestPos);
@@ -77,6 +86,22 @@ namespace Pathfinder
 
                 // Trace the completed path
                 TracePath();
+            }
+        }
+
+        /// <summary>
+        /// Updates the current visualization.
+        /// </summary>
+        /// <param name="currentNeighbours">The neighbours on the current search iteration.</param>
+        protected virtual void UpdateVisualization(List<Coord2> currentNeighbours)
+        {
+            for (int i = 0; i < currentNeighbours.Count; i++)
+            {
+                if(map.ValidPosition(currentNeighbours[i]))
+                {
+                    if (nodes.Get(currentNeighbours[i].X, currentNeighbours[i].Y).closed == false)
+                        map.SetRenderColor(currentNeighbours[i], NEIGHBOUR_COLOR); 
+                }
             }
         }
 
@@ -115,7 +140,7 @@ namespace Pathfinder
             }
         }
 
-        protected virtual void RecalculateCosts(Coord2[] neighbours, Coord2 pos)
+        protected virtual void RecalculateCosts(List<Coord2> neighbours, Coord2 pos)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -148,6 +173,7 @@ namespace Pathfinder
                 nodes.Get(nextClosed.X, nextClosed.Y).inPath = true;
                 path.Add(nextClosed);
                 nextClosed = nodes.Get(nextClosed.X, nextClosed.Y).link;
+                map.SetRenderColor(nextClosed, PATH_COLOR);
                 if (nextClosed == startPos)
                     done = true;
             }

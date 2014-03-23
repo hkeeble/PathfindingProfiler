@@ -14,13 +14,12 @@ namespace Pathfinder
     {
         public AStar(int gridSize, Map map) : base(gridSize, map)
         {
-            nodes = new NodeCollection(gridSize);
             Name = "A Star";
         }
 
-        protected override void RecalculateCosts(Coord2[] neighbours, Coord2 pos)
+        protected override void RecalculateCosts(List<Coord2> neighbours, Coord2 pos)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < neighbours.Count; i++)
             {
                 if(map.ValidPosition(neighbours[i]) && nodes.Get(neighbours[i].X, neighbours[i].Y).closed == false)
                 {

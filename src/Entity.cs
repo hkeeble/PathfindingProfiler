@@ -35,6 +35,7 @@ namespace Pathfinder
         public void SetPosition(Coord2 pos)
         {
             gridPosition = pos;
+            targetPosition = pos;
         }
 
         public Coord2 GridPosition { get { return gridPosition; } }

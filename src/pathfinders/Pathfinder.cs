@@ -13,6 +13,7 @@ namespace Pathfinder
     {
         Dijkstra,
         AStar,
+        JPS,
         ScentMap
     }
 
@@ -88,6 +89,8 @@ namespace Pathfinder
                     return (IPathfinder)new AStar(gridSize, map);
                 case PathfinderAlgorithm.ScentMap:
                     return (IPathfinder)new ScentMap(gridSize, map);
+                case PathfinderAlgorithm.JPS:
+                    return (IPathfinder)new JPS(gridSize, map);
                 default:
                     Console.WriteLine("PathfinderFactory: Attempted to create unrecognized pathfinder type. Returning Dijkstra.\n");
                     return (IPathfinder)new Dijkstra(gridSize, map);

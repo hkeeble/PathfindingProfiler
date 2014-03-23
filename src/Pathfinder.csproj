@@ -138,6 +138,8 @@
     <Compile Include="forms\GenerateMap.Designer.cs">
       <DependentUpon>GenerateMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="map\Tile.cs" />
+    <Compile Include="pathfinders\JPS.cs" />
     <Compile Include="testing\TestCompletedEvent.cs" />
     <Compile Include="testing\TestData.cs" />
     <Compile Include="forms\TestRun.cs">
@@ -153,7 +155,7 @@
     <Compile Include="InputHandler.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LevelHandler.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="map\Map.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="menu\Button.cs" />
     <Compile Include="menu\Menu.cs" />

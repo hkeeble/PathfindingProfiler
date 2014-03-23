@@ -130,6 +130,10 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <None Include="Maps\testmap.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Name>testmap</Name>
+    </None>
     <None Include="Maps\0.map">
       <Name>0</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -156,6 +160,13 @@
       <Name>textbox</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\bmpFont.bmp">
+      <Name>bmpFont</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

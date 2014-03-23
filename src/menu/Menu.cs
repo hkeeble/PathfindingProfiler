@@ -17,7 +17,7 @@ namespace Pathfinder
     {
         OpenDijkstra,
         OpenAStar,
-        OpenScentAlgorithm,
+        OpenJPS,
         OpenMapFile,
         OpenTestConfig,
         OpenGenerateMap
@@ -103,8 +103,8 @@ namespace Pathfinder
             buttons.Add(new Button(new Vector2(quarterX - 75, 350), new Vector2(150, 70), buttonTexture, "A Star", buttonFont, Color.White, Color.Yellow,
                 MenuCommand.OpenAStar));
 
-            buttons.Add(new Button(new Vector2(quarterX + 175, 250), new Vector2(150, 70), buttonTexture, "  Scent\nAlgorithm", buttonFont, Color.White,
-                Color.Yellow, MenuCommand.OpenScentAlgorithm));
+            buttons.Add(new Button(new Vector2(quarterX + 175, 250), new Vector2(150, 70), buttonTexture, "JPS", buttonFont, Color.White,
+                Color.Yellow, MenuCommand.OpenJPS));
 
             // Create Textbox
             Vector2 textBoxPos = new Vector2(70, 120);
@@ -145,15 +145,15 @@ namespace Pathfinder
 
                     if (b.IsPressed)
                     {
-                        if (b.Command == MenuCommand.OpenDijkstra || b.Command == MenuCommand.OpenAStar || b.Command == MenuCommand.OpenScentAlgorithm)
+                        if (b.Command == MenuCommand.OpenDijkstra || b.Command == MenuCommand.OpenAStar || b.Command == MenuCommand.OpenJPS)
                         {
                             LoadMap();
                             if (b.Command == MenuCommand.OpenDijkstra)
                                 LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.Dijkstra);
                             else if (b.Command == MenuCommand.OpenAStar)
                                 LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.AStar);
-                            else if (b.Command == MenuCommand.OpenScentAlgorithm)
-                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.ScentMap);
+                            else if (b.Command == MenuCommand.OpenJPS)
+                                LevelHandler.SetPathfindingAlgorithm(PathfinderAlgorithm.JPS);
                             else
                             {
                                 Console.WriteLine("Menu.cs: Error, attempted to set unrecognized pathfinding algorithm. Defaulting to Dijkstra.");

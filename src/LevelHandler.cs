@@ -29,6 +29,13 @@ namespace Pathfinder
         private Texture2D playerTexture;
         private Texture2D botTexture;
 
+        // Strings to display
+        SpriteFont mainFont;
+        const float hudScale = 0.8f;
+        bool showInstructions = false;
+        private const string Instructions = "Right Click - Set Bot Position\nLeft Click - Set Target Position\nEnter - Find Path\nEsc - Return to Menu\nArrow Keys - Move Target Manually\nTab - Hide/Show Instructions";
+        private const string HideShow = "Tab - Hide/Show Instructions";
+
         public static void SetMap(string mapFile)
         {
             level.LoadMap(mapFile);
@@ -71,6 +78,9 @@ namespace Pathfinder
             playerTexture   = Game.Content.Load<Texture2D>("Images/target");
             botTexture      = Game.Content.Load<Texture2D>("Images/ai");
 
+            // Load Font
+            mainFont = Game.Content.Load<SpriteFont>("Fonts/bmpFont");
+
             level = new Level(new Map(tileTexture1, tileTexture2),
                               new Player(playerTexture, 0, 0),
                               new AiBotBlank(botTexture, 0, 0));
@@ -80,20 +90,63 @@ namespace Pathfinder
 
         public override void Draw(GameTime gameTime)
         {
+            // Draw Level
             level.Draw(spriteBatch);
 
+            // Draw the HUD
+            DrawHUD();
+
             base.Draw(gameTime);
+        }
+
+        private void DrawHUD()
+        {
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(mainFont, "Algorithm: " + level.Map.pathfinder.GetName(), Vector2.Zero, Color.DarkOrange);
+
+            if (showInstructions)
+                spriteBatch.DrawString(mainFont, Instructions, new Vector2(0, Game.Window.ClientBounds.Height - (mainFont.MeasureString(Instructions).Y * hudScale)),
+                    Color.DarkOrange, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
+            else
+                spriteBatch.DrawString(mainFont, HideShow, new Vector2(0, Game.Window.ClientBounds.Height - (mainFont.MeasureString(HideShow).Y * hudScale)),
+                    Color.DarkOrange, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
+
+            spriteBatch.End();
         }
 
         public override void Update(GameTime gameTime)
         {
             level.Update(gameTime);
 
-            // Check if user wishes to return to menu
-            if(InputHandler.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+            if (Game.IsActive)
             {
-                if (MessageBox.Show("Return to the menu?", "Return to Menu", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == DialogResult.Yes)
-                    Main.SetState(typeof(Menu));
+                // Check if user wishes to return to menu
+                if (InputHandler.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+                {
+                    if (MessageBox.Show("Return to the menu?", "Return to Menu", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == DialogResult.Yes)
+                        Main.SetState(typeof(Menu));
+                }
+
+                // Check for mouse clicks
+                if (InputHandler.IsMouseInWindow(GraphicsDevice.Viewport.Bounds))
+                {
+                    if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton) || InputHandler.IsMouseButtonPressed(MouseButton.RightButton))
+                    {
+                        ClearAll();
+
+                        Point mp = new Point(InputHandler.MousePosition().X / level.Map.TileSize, InputHandler.MousePosition().Y / level.Map.TileSize);
+
+                        if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton))
+                            level.SetPlayerPosition(new Coord2(mp.X, mp.Y));
+                        else
+                            level.SetBotPosition(new Coord2(mp.X, mp.Y));
+                    }
+                }
+
+                // Check for hide/show instructions
+                if (InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Tab))
+                    showInstructions = !showInstructions;
             }
 
             base.Update(gameTime);
@@ -116,6 +169,15 @@ namespace Pathfinder
 
             // Return results
             return new TestResult(timeTaken.Ticks, Level.Map.pathfinder.GetPath().Count);
+        }
+
+        /// <summary>
+        /// Clears all previous data from the pathfinder and map colors.
+        /// </summary>
+        private void ClearAll()
+        {
+            level.Map.ClearColor();
+            level.Map.pathfinder.Clear();
         }
 
         public static Level Level { get { return level; } }
