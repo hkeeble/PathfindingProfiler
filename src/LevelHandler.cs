@@ -103,14 +103,14 @@ namespace Pathfinder
         {
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(mainFont, "Algorithm: " + level.Map.pathfinder.GetName(), Vector2.Zero, Color.DarkOrange);
+            spriteBatch.DrawString(mainFont, "Algorithm: " + level.Map.pathfinder.GetName(), Vector2.Zero, Color.Violet);
 
             if (showInstructions)
                 spriteBatch.DrawString(mainFont, Instructions, new Vector2(0, Game.Window.ClientBounds.Height - (mainFont.MeasureString(Instructions).Y * hudScale)),
-                    Color.DarkOrange, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
+                    Color.Violet, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
             else
                 spriteBatch.DrawString(mainFont, HideShow, new Vector2(0, Game.Window.ClientBounds.Height - (mainFont.MeasureString(HideShow).Y * hudScale)),
-                    Color.DarkOrange, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
+                    Color.Violet, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
 
             spriteBatch.End();
         }

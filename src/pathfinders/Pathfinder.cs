@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Pathfinder
 {
@@ -60,6 +61,7 @@ namespace Pathfinder
         bool IsInPath(int x, int y);
         string GetName();
         List<Coord2> GetPath();
+        void DrawPath(SpriteBatch sb);
 
         // Usually used to retrieve data required for visual representation. These will have very different implementations for each pathfinder.
         int GetValue(int x, int y);
@@ -86,8 +88,6 @@ namespace Pathfinder
                     return (IPathfinder)new Dijkstra(gridSize, map);
                 case PathfinderAlgorithm.AStar:
                     return (IPathfinder)new AStar(gridSize, map);
-                case PathfinderAlgorithm.ScentMap:
-                    return (IPathfinder)new ScentMap(gridSize, map);
                 case PathfinderAlgorithm.JPS:
                     return (IPathfinder)new JPS(gridSize, map);
                 default:

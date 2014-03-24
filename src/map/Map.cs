@@ -174,6 +174,8 @@ namespace Pathfinder
                         sb.Draw(tile1Texture, new Vector2(x*tileDimension, y*tileDimension), tiles[x,y].RenderColor);
                 }
             }
+
+            pathfinder.DrawPath(sb);
         }
 
         /// <summary>

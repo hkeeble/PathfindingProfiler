@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Pathfinder
 {
@@ -41,6 +42,7 @@ namespace Pathfinder
             GridSize = gridSize;
             nodes = new NodeCollection(gridSize);
             path = new List<Coord2>();
+            pathConnectors = new List<Line>();
             this.map = map;
         }
 
@@ -190,10 +192,37 @@ namespace Pathfinder
                 nodes.Get(nextClosed).inPath = true;
                 path.Add(nextClosed);
                 nextClosed = nodes.Get(nextClosed).parent.position;
-                map.SetRenderColor(nextClosed, PATH_COLOR);
                 if (nextClosed == start.position)
                     done = true;
             }
+
+            // Create path line
+            pathConnectors.Clear();
+            for (int i = 0; i < path.Count; i++)
+            {
+                Point lstart;
+                Point lend;
+
+                if (i + 1 < path.Count)
+                {
+                    lstart = new Point(path[i].X * map.TileSize + (map.TileSize / 2), path[i].Y * map.TileSize + (map.TileSize / 2));
+                    lend = new Point(path[i + 1].X * map.TileSize + (map.TileSize / 2), path[i + 1].Y * map.TileSize + (map.TileSize / 2));
+                }
+                else
+                {
+                    lstart = new Point(path[i].X * map.TileSize + (map.TileSize / 2), path[i].Y * map.TileSize + (map.TileSize / 2));
+                    lend = new Point(start.position.X * map.TileSize + (map.TileSize / 2), start.position.Y * map.TileSize + (map.TileSize / 2));
+                }
+
+                pathConnectors.Add(new Line(lstart, lend, Color.Red, 3, GameUtils.GetUtil<GraphicsDevice>()));
+            }
+        }
+
+        public void DrawPath(SpriteBatch sb)
+        {
+            if(pathConnectors.Count > 0)
+                foreach (Line l in pathConnectors)
+                    l.Draw(sb);
         }
 
         public bool IsInPath(int x, int y)
@@ -207,6 +236,7 @@ namespace Pathfinder
         {
             path.Clear();
             nodes.Clear();
+            pathConnectors.Clear();
         }
 
         public int GetValue(int x, int y)

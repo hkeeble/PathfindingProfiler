@@ -60,6 +60,8 @@ namespace Pathfinder
 
         protected override void Initialize()
         {
+
+            GameUtils.AddUtil<GraphicsDevice>(GraphicsDevice);
             base.Initialize();
         }
 

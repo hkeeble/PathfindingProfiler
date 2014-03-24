@@ -45,7 +45,7 @@ namespace Pathfinder
                     List<Node> successors = GetSuccessors(currentLowest);
 
                     foreach (Node n in successors)
-                        map.SetRenderColor(n.position, Color.Red);
+                        map.SetRenderColor(n.position, Color.Cyan);
 
                     if(successors.Contains(target))
                     {
@@ -59,7 +59,7 @@ namespace Pathfinder
                 }
 
                 // Trace the completed path
-                // TracePath();
+                TracePath();
             }
         }
 
