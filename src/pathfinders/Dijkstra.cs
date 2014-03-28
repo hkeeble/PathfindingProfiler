@@ -53,45 +53,42 @@ namespace Pathfinder
 
         public virtual void Build(Coord2 startPos, Coord2 targetPos)
         {
-            if(InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
+            path = new List<Coord2>();
+            nodes = new NodeCollection(GridSize);
+
+            this.start = nodes.Get(startPos);
+            this.target = nodes.Get(targetPos);
+
+            // Initialize bot position
+            nodes.Get(startPos).cost = 0;
+            bool firstLoop = true;
+
+            while (nodes.Get(targetPos).closed == false)
             {
-                path = new List<Coord2>();
-                nodes = new NodeCollection(GridSize);
-
-                this.start = nodes.Get(startPos);
-                this.target = nodes.Get(targetPos);
-
-                // Initialize bot position
-                nodes.Get(startPos).cost = 0;
-                bool firstLoop = true;
-
-                while (nodes.Get(targetPos).closed == false)
+                if (firstLoop)
                 {
-                    if (firstLoop)
-                    {
-                        currentLowest = start;
-                        firstLoop = false;
-                    }
-                    else
-                        FindLowestCost(); // Find lowest cost
-
-                    // Mark lowest cost as closed
-                    currentLowest.closed = true;
-                    map.SetRenderColor(currentLowest.position, CLOSED_COLOR);
-
-                    // Find the neigbour positions
-                    List<Node> neighbours = GetNeighours(currentLowest);
-
-                    // Update visualization
-                    UpdateVisualization(neighbours);
-
-                    // Recalculate Costs
-                    RecalculateCosts(neighbours, currentLowest);
+                    currentLowest = start;
+                    firstLoop = false;
                 }
+                else
+                    FindLowestCost(); // Find lowest cost
 
-                // Trace the completed path
-                TracePath();
+                // Mark lowest cost as closed
+                currentLowest.closed = true;
+                map.SetRenderColor(currentLowest.position, CLOSED_COLOR);
+
+                // Find the neigbour positions
+                List<Node> neighbours = GetNeighours(currentLowest);
+
+                // Update visualization
+                UpdateVisualization(neighbours);
+
+                // Recalculate Costs
+                RecalculateCosts(neighbours, currentLowest);
             }
+
+            // Trace the completed path
+            TracePath();
         }
 
         protected virtual List<Node> GetNeighours(Node node)

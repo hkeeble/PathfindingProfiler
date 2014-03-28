@@ -16,51 +16,48 @@ namespace Pathfinder
 
         public override void Build(Coord2 startPos, Coord2 targetPos)
         {
-            if (InputHandler.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Enter))
+            path = new List<Coord2>();
+            nodes = new NodeCollection(GridSize);
+
+            this.start = nodes.Get(startPos.X, startPos.Y);
+            this.target = nodes.Get(targetPos.X, targetPos.Y);
+
+            // Initialize bot position
+            nodes.Get(startPos.X, startPos.Y).cost = 0;
+            bool firstLoop = true;
+
+            while (nodes.Get(targetPos.X, targetPos.Y).closed == false)
             {
-                path = new List<Coord2>();
-                nodes = new NodeCollection(GridSize);
-
-                this.start = nodes.Get(startPos.X, startPos.Y);
-                this.target = nodes.Get(targetPos.X, targetPos.Y);
-
-                // Initialize bot position
-                nodes.Get(startPos.X, startPos.Y).cost = 0;
-                bool firstLoop = true;
-
-                while (nodes.Get(targetPos.X, targetPos.Y).closed == false)
+                if (firstLoop)
                 {
-                    if (firstLoop)
-                    {
-                        currentLowest = start;
-                        firstLoop = false;
-                    }
-                    else
-                        FindLowestCost(); // Find lowest cost
+                    currentLowest = start;
+                    firstLoop = false;
+                }
+                else
+                    FindLowestCost(); // Find lowest cost
 
-                    // Mark lowest cost as closed
-                    currentLowest.closed = true;
+                // Mark lowest cost as closed
+                currentLowest.closed = true;
 
-                    // Find the neigbour positions
-                    List<Node> successors = GetSuccessors(currentLowest);
+                // Find the neigbour positions
+                List<Node> successors = GetSuccessors(currentLowest);
 
-                    foreach (Node n in successors)
-                        map.SetRenderColor(n.position, Color.Cyan);
+                foreach (Node n in successors)
+                    map.SetRenderColor(n.position, Color.Cyan);
 
-                    if(successors.Contains(target))
-                    {
-                        target.closed = true;
-                        target.parent = currentLowest;
-                        break;
-                    }
-
-                    // Recalculate Costs
-                    RecalculateCosts(successors, currentLowest);
+                if(successors.Contains(target))
+                {
+                    target.closed = true;
+                    target.parent = currentLowest;
+                    break;
                 }
 
-                // Trace the completed path
-                TracePath();
+                // Recalculate Costs
+                RecalculateCosts(successors, currentLowest);
             }
+
+            // Trace the completed path
+            TracePath();
         }
 
         protected List<Node> GetSuccessors(Node node)

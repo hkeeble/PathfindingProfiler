@@ -47,7 +47,8 @@ namespace Pathfinder
             HandlePlayerMovement();
 
             // Update the pathfinder
-            map.pathfinder.Build(bot.GridPosition, player.GridPosition);
+            if(InputHandler.IsKeyPressed(Keys.Enter))
+                map.pathfinder.Build(bot.GridPosition, player.GridPosition);
 
             // Update bot and player
             bot.Update(gameTime, map, player);

@@ -86,6 +86,8 @@ namespace Pathfinder
                     algo = PathfinderAlgorithm.AStar;
                 else if (comboBoxAlgorithm.Text == "Dijkstra")
                     algo = PathfinderAlgorithm.Dijkstra;
+                else if (comboBoxAlgorithm.Text == "JPS")
+                    algo = PathfinderAlgorithm.JPS;
 
                 // Set up the test configuration
                 TestConfig config = new TestConfig(Convert.ToInt32(textBoxDistance.Text),

@@ -46,7 +46,8 @@
             this.comboBoxAlgorithm.FormattingEnabled = true;
             this.comboBoxAlgorithm.Items.AddRange(new object[] {
             "A*",
-            "Dijkstra"});
+            "Dijkstra",
+            "JPS"});
             this.comboBoxAlgorithm.Location = new System.Drawing.Point(135, 6);
             this.comboBoxAlgorithm.Name = "comboBoxAlgorithm";
             this.comboBoxAlgorithm.Size = new System.Drawing.Size(114, 21);

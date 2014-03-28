@@ -87,7 +87,6 @@ namespace Pathfinder
                 Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Test Results/");
 
             try {
-                
                 sw = new StreamWriter(Directory.GetCurrentDirectory() + "/Test Results/" + config.OutputFile + ".txt");
             } catch(Exception e) {
                 Console.Write("Failed to open stream for test output file.\nException: " + e.Message + "\n");
