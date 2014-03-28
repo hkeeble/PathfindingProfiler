@@ -63,23 +63,59 @@ namespace Pathfinder
 
             foreach (Node neighbour in neighbours)
             {
-                // Get direction from current node to neighbour
-                Vector2 dirToNeighbour = new Vector2(MathHelper.Clamp(neighbour.position.X - node.position.X, -1, 1),
-                    MathHelper.Clamp(neighbour.position.Y - node.position.Y, -1, 1));
-
-                if (map.ValidPosition(node.position))
+                if (neighbour != null)
                 {
-                    // Call Jump and search for a jump point
-                    Coord2? jumpPoint = Jump(node.position, dirToNeighbour);
-                    if (jumpPoint.HasValue)
+                    // Get direction from current node to neighbour
+                    Vector2 dirToNeighbour = new Vector2(MathHelper.Clamp(neighbour.position.X - node.position.X, -1, 1),
+                        MathHelper.Clamp(neighbour.position.Y - node.position.Y, -1, 1));
+
+                    if (map.ValidPosition(node.position))
                     {
-                        nodes.Get(jumpPoint.Value).parent = node;
-                        successors.Add(nodes.Get(jumpPoint.Value));
+                        // Call Jump and search for a jump point
+                        Coord2? jumpPoint = Jump(node.position, dirToNeighbour);
+                        if (jumpPoint.HasValue)
+                        {
+                            nodes.Get(jumpPoint.Value).parent = node;
+                            successors.Add(nodes.Get(jumpPoint.Value));
+                        }
                     }
                 }
             }
 
             return successors;
+        }
+
+        protected override void RecalculateCosts(List<Node> successors, Node node)
+        {
+            for (int i = 0; i < successors.Count; i++)
+            {
+                if (map.ValidPosition(successors[i].position) && successors[i].closed == false)
+                {
+                    float newCost = nodes.Get(node.position.X, node.position.Y).cost + manhattanDist(successors[i].position, target.position);
+
+                    if (newCost < successors[i].cost)
+                    {
+                        successors[i].cost = newCost;
+                        successors[i].parent = node;
+                    }
+                }
+            }
+        }
+
+        protected override void FindLowestCost()
+        {
+            currentLowest = target;
+
+            for (int x = 0; x < GridSize; x++)
+            {
+                for (int y = 0; y < GridSize; y++)
+                {
+                    // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
+                    if (nodes.Get(currentLowest.position.X, currentLowest.position.Y).cost >= nodes.Get(x, y).cost &&
+                        nodes.Get(x, y).closed == false && map.ValidPosition(new Coord2(x, y)))
+                        currentLowest = nodes.Get(x, y);
+                }
+            }
         }
 
         /// <summary>
@@ -120,7 +156,7 @@ namespace Pathfinder
                 }
                 else // Horizontal and vertical searches
                 {
-                    if(dx == 0)
+                    if(dx == 0 && node.position.Y + dy > 0 && node.position.Y + dy < GridSize)
                     {
                         if (!map.IsBlocked(node.position.X, node.position.Y + dy))
                         {
@@ -132,7 +168,7 @@ namespace Pathfinder
                                 neighbours.Add(nodes.Get(node.position.X + 1, node.position.Y + dy));
                         }
                     }
-                    else
+                    else if (node.position.X + dx > 0 && node.position.X + dx < GridSize)
                     {
                         if (!map.IsBlocked(node.position.X, node.position.Y + dy))
                         {

@@ -60,7 +60,7 @@ namespace Pathfinder
             }
         }
 
-        private int manhattanDist(Coord2 playerPos, Coord2 currentPos)
+        protected int manhattanDist(Coord2 playerPos, Coord2 currentPos)
         {
             Coord2 dist = playerPos - currentPos;
             if (dist.X < 0)
