@@ -25,7 +25,10 @@ namespace Pathfinder
                 {
                     float costToAdd = 0.0f;
 
-                    if (neighbours[i].position.X != 0 && neighbours[i].position.Y != 0)
+                    Vector2 dirToNode = new Vector2(MathHelper.Clamp(neighbours[i].position.X - node.position.X, -1, 1),
+                        MathHelper.Clamp(neighbours[i].position.Y - node.position.Y, -1, 1));
+
+                    if (dirToNode.X != 0 && dirToNode.Y != 0)
                         costToAdd = D_COST;
                     else
                         costToAdd = HV_COST;

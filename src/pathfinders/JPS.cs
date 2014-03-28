@@ -26,7 +26,7 @@ namespace Pathfinder
             nodes.Get(startPos.X, startPos.Y).cost = 0;
             bool firstLoop = true;
 
-            while (nodes.Get(targetPos.X, targetPos.Y).closed == false)
+            while (nodes.Get(targetPos).closed == false)
             {
                 if (firstLoop)
                 {
@@ -39,18 +39,14 @@ namespace Pathfinder
                 // Mark lowest cost as closed
                 currentLowest.closed = true;
 
+                if (currentLowest == target)
+                    break;
+
                 // Find the neigbour positions
                 List<Node> successors = GetSuccessors(currentLowest);
 
                 foreach (Node n in successors)
                     map.SetRenderColor(n.position, Color.Cyan);
-
-                if(successors.Contains(target))
-                {
-                    target.closed = true;
-                    target.parent = currentLowest;
-                    break;
-                }
 
                 // Recalculate Costs
                 RecalculateCosts(successors, currentLowest);
