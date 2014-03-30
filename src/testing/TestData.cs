@@ -15,8 +15,10 @@ using System.Text;
 
 namespace Pathfinder
 {
-    /* Contains testing error messages */
-    struct ERROR_MSG
+    /// <summary>
+    /// Contains error messages for the test configuration form.
+    /// </summary>
+    struct TCFG_ERROR_MSG
     {
         public const string NO_ALGORITHM = "Select an algorithm to use.\n";
         public const string NO_AVG_DIST = "Enter a path distance.\n";
@@ -24,6 +26,14 @@ namespace Pathfinder
         public const string NO_OUTPUT_FILE = "Enter a filename.\n";
         public const string RUNS_IS_ZERO = "Number of runs cannot be 0.\n";
         public const string DIST_IS_ZERO = "Path distance cannot be 0.\n";
+    }
+
+    /// <summary>
+    /// Contains error messages for th map generation form.
+    /// </summary>
+    struct MG_ERROR_MSG
+    {
+        public const string NO_NAME = "Enter a map name.\n";
     }
 
     /* Represents a test configuration */
@@ -95,13 +105,16 @@ namespace Pathfinder
         {
             ticksForPath = ticks;
             pathLength = pLength;
+            failed = false;
         }
 
         private long ticksForPath;
         private int pathLength;
+        private bool failed;
 
         public long TicksForPath { get { return ticksForPath; } }
         public int PathLength { get { return pathLength; } }
+        public bool Failed { get { return failed; } set { failed = value; } }
     }
 
     /* Represents a collection of test results */

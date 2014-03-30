@@ -14,6 +14,10 @@ namespace Pathfinder
     {
         TestWorker worker; // The background worker, testing runs on it's own background thread
 
+        private int percOnlastUpdate = 0;
+
+        private const double MS_PER_TICK = 0.0001;
+
         public TestRun()
         {
             InitializeComponent();
@@ -41,6 +45,9 @@ namespace Pathfinder
             worker.ProgressChanged += new ProgressChangedEventHandler(workerReport);
             worker.OnComplete += new TestCompletedEventHandler(workerComplete);
 
+            // Initialize percentage on last update
+            percOnlastUpdate = 0;
+
             // Run background worker thread
             worker.RunWorkerAsync();
         }
@@ -52,8 +59,9 @@ namespace Pathfinder
         {
             TestWorker wrkr = sender as TestWorker;
 
-            percLabel.Text = Convert.ToString(Convert.ToInt32(percLabel.Text) + args.ProgressPercentage);
-            progressBarTests.Increment(args.ProgressPercentage);
+            percLabel.Text = Convert.ToString(args.ProgressPercentage);
+            progressBarTests.Increment(args.ProgressPercentage - percOnlastUpdate);
+            percOnlastUpdate = args.ProgressPercentage;
             this.Refresh();
         }
 
@@ -93,12 +101,14 @@ namespace Pathfinder
                 return;
             }
 
-            sw.Write("Test Run On: " + config.StartTime.ToLongDateString() + " at " + config.EndTime.ToLongTimeString() + sw.NewLine);
+            sw.Write("Test Run On: " + config.StartTime.ToLongDateString() + " at " + config.EndTime.ToLongTimeString() + sw.NewLine + sw.NewLine);
+            sw.Write("----- Configuration -----" + sw.NewLine);
             sw.Write("Map: " + config.MapName + sw.NewLine);
             sw.Write("Number of Obstacles on Map: " + config.NumberOfObstacles + sw.NewLine);
+            sw.Write("Manhattan distance between start and target: " + config.PathDistance + sw.NewLine + sw.NewLine);
+            sw.Write("----- Results ----" + sw.NewLine);
             sw.Write("Average path length: " + results.AverageLength + sw.NewLine);
-            sw.Write("Average ticks taken: " + results.AverageTicksForPath + sw.NewLine);
-            sw.Write("Test Finished On: " + config.EndTime.ToLongDateString() + " at " + config.StartTime.ToLongTimeString() + sw.NewLine);
+            sw.Write("Average ms taken: " + ((double)results.AverageTicksForPath * MS_PER_TICK) + sw.NewLine);
 
             sw.Flush();
             sw.Close();

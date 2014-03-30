@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Pathfinder
@@ -31,36 +32,47 @@ namespace Pathfinder
         {
  	        base.OnDoWork(e);
 
+            // Assign a random start position
+            Coord2 startPos;
+            do
+            {
+                startPos.X = rand.Next(0, LevelHandler.Level.Map.GridSize);
+                startPos.Y = rand.Next(0, LevelHandler.Level.Map.GridSize);
+            } while (!LevelHandler.Level.Map.ValidPosition(startPos));
+
+            // Find the possible spawn points
+            List<Coord2> possibleTargets = new List<Coord2>();
+            Coord2 topLeft = new Coord2(startPos.X - config.PathDistance, startPos.Y - config.PathDistance);
+            for(int x = 0; x < (config.PathDistance*2); x++)
+            {
+                possibleTargets.Add(new Coord2(topLeft.X + x, topLeft.Y));
+                possibleTargets.Add(new Coord2(topLeft.X + x, topLeft.Y + (config.PathDistance*2)));
+            }
+            for(int y = 0; y < (config.PathDistance*2); y++)
+            {
+                possibleTargets.Add(new Coord2(topLeft.X, topLeft.Y + y));
+                possibleTargets.Add(new Coord2(topLeft.X + (config.PathDistance*2), topLeft.Y + y));
+            }
+
             for (int i = 0; i < config.NumberOfTestRuns; i++)
             {
                 if (!CheckCancellation())
                 {
-                    // Calculate positions for this test run
-                    Coord2 targetPos = new Coord2(0, 0);
-                    Coord2 botPos = new Coord2(0, 0);
-
-                    // Assign a random bot position
-                    do
-                    {
-                        botPos.X = rand.Next(0, LevelHandler.Level.Map.GridSize);
-                        botPos.Y = rand.Next(0, LevelHandler.Level.Map.GridSize);
-                    } while (!LevelHandler.Level.Map.ValidPosition(botPos));
-
-                    // Calculate area in which the target should not be
-                    Rectangle noSpawnArea = new Rectangle(botPos.X - config.PathDistance, botPos.Y - config.PathDistance, config.PathDistance * 2, config.PathDistance * 2);
-
-                    // Assign a target position the correct distance from the bot
-                    do
-                    {
-                        targetPos.X = rand.Next(0, LevelHandler.Level.Map.GridSize);
-                        targetPos.Y = rand.Next(0, LevelHandler.Level.Map.GridSize);
-                    } while (!LevelHandler.Level.Map.ValidPosition(targetPos) && noSpawnArea.Contains(new Point(targetPos.X, targetPos.Y)));
+                    // Find a random position
+                    Coord2 targetPos = possibleTargets[rand.Next(0, possibleTargets.Count)];
 
                     // Run test on the loaded level
-                    results.Add(LevelHandler.RunTest(config.Algorithm, botPos, targetPos));
+                    TestResult result = new TestResult();
+                    do
+                    {
+                        result = LevelHandler.RunTest(config.Algorithm, startPos, targetPos);
+                    } while (result.Failed == true); // If the result reported a failure, run it again
+
+                    // Add the result
+                    results.Add(result);
 
                     // Report the thread's current progress
-                    ReportProgress((int)(100/config.NumberOfTestRuns)*i, null);
+                    ReportProgress((int)(100/config.NumberOfTestRuns)*(i+1), null);
                 }
                 else
                     break;

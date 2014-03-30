@@ -28,10 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBoxWidth = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBoxHeight = new System.Windows.Forms.TextBox();
             this.numericUpDownPercBlocked = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -39,40 +36,19 @@
             this.buttonGenerate = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDownGridSize = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPercBlocked)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGridSize)).BeginInit();
             this.SuspendLayout();
-            // 
-            // textBoxWidth
-            // 
-            this.textBoxWidth.Location = new System.Drawing.Point(105, 32);
-            this.textBoxWidth.Name = "textBoxWidth";
-            this.textBoxWidth.Size = new System.Drawing.Size(52, 20);
-            this.textBoxWidth.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(64, 35);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Width";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(163, 35);
+            this.label2.Location = new System.Drawing.Point(48, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Height";
-            // 
-            // textBoxHeight
-            // 
-            this.textBoxHeight.Location = new System.Drawing.Point(207, 32);
-            this.textBoxHeight.Name = "textBoxHeight";
-            this.textBoxHeight.Size = new System.Drawing.Size(52, 20);
-            this.textBoxHeight.TabIndex = 3;
+            this.label2.Text = "Grid Size";
             // 
             // numericUpDownPercBlocked
             // 
@@ -140,11 +116,34 @@
             this.label5.TabIndex = 10;
             this.label5.Text = "%";
             // 
+            // numericUpDownGridSize
+            // 
+            this.numericUpDownGridSize.Location = new System.Drawing.Point(105, 33);
+            this.numericUpDownGridSize.Maximum = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+            this.numericUpDownGridSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownGridSize.Name = "numericUpDownGridSize";
+            this.numericUpDownGridSize.Size = new System.Drawing.Size(40, 20);
+            this.numericUpDownGridSize.TabIndex = 11;
+            this.numericUpDownGridSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // GenerateMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(271, 143);
+            this.Controls.Add(this.numericUpDownGridSize);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonGenerate);
@@ -152,10 +151,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.numericUpDownPercBlocked);
-            this.Controls.Add(this.textBoxHeight);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBoxWidth);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -163,6 +159,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Generate Map";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPercBlocked)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGridSize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -170,10 +167,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBoxWidth;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBoxHeight;
         private System.Windows.Forms.NumericUpDown numericUpDownPercBlocked;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -181,5 +175,6 @@
         private System.Windows.Forms.Button buttonGenerate;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDownGridSize;
     }
 }

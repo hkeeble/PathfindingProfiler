@@ -24,60 +24,70 @@ namespace Pathfinder
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-            // Obtain input data from form
-            string name = textBoxName.Text;
-            int width = FormUtil.GetIntegerValue(textBoxWidth);
-            int height = FormUtil.GetIntegerValue(textBoxHeight);
-            int percentCoverage = FormUtil.GetIntegerValue(numericUpDownPercBlocked);
+            string errMsg = "";
 
-            // Create tile array
-             int[,] tiles = new int[width, height];
+            if (textBoxName.Text.Length == 0)
+                errMsg += MG_ERROR_MSG.NO_NAME;
 
-            // Initialize tile array
-            for (int x = 0; x < width; x++)
+            if (errMsg.Length == 0)
             {
-                for (int y = 0; y < height; y++)
+                // Obtain input data from form
+                string name = textBoxName.Text;
+                int gridSize = FormUtil.GetIntegerValue(numericUpDownGridSize);
+                int percentCoverage = FormUtil.GetIntegerValue(numericUpDownPercBlocked);
+
+                // Create tile array
+                int[,] tiles = new int[gridSize, gridSize];
+
+                // Initialize tile array
+                for (int x = 0; x < gridSize; x++)
                 {
-                    tiles[x, y] = 0;
+                    for (int y = 0; y < gridSize; y++)
+                    {
+                        tiles[x, y] = 0;
+                    }
                 }
-            }
 
-            // Calculate the number of tiles that need to be blocked
-            int totalTiles = width * height;
-            double totalTilesToCover = ((double)percentCoverage / 100f) * totalTiles;
+                // Calculate the number of tiles that need to be blocked
+                int totalTiles = gridSize * gridSize;
+                double totalTilesToCover = ((double)percentCoverage / 100f) * totalTiles;
 
-            // Seed a random generator
-            Random rand = new Random(DateTime.Now.Millisecond);
+                // Seed a random generator
+                Random rand = new Random(DateTime.Now.Millisecond);
 
-            // Ensure that number of tiles are blocked
-            for(int i = 0; i < totalTilesToCover; i++)
-            {
-                Coord2 newBlocked;
-
-                do {
-                    newBlocked = new Coord2(rand.Next(0, width), rand.Next(0, height));
-                } while (tiles[newBlocked.X, newBlocked.Y] == 1);
-
-                tiles[newBlocked.X, newBlocked.Y] = 1;
-            }
-
-            // Output the map data
-            StreamWriter sw = new StreamWriter("Content/Maps/" + name + ".map");
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
+                // Ensure that number of tiles are blocked
+                for (int i = 0; i < totalTilesToCover; i++)
                 {
-                    if (tiles[x, y] == 1)
-                        sw.Write('#');
-                    else
-                        sw.Write('.');
-                }
-                sw.Write(sw.NewLine);
-            }
-            sw.Flush();
-            sw.Close();
+                    Coord2 newBlocked;
 
-            this.Close();
+                    do
+                    {
+                        newBlocked = new Coord2(rand.Next(0, gridSize), rand.Next(0, gridSize));
+                    } while (tiles[newBlocked.X, newBlocked.Y] == 1);
+
+                    tiles[newBlocked.X, newBlocked.Y] = 1;
+                }
+
+                // Output the map data
+                StreamWriter sw = new StreamWriter("Content/Maps/" + name + ".map");
+                for (int y = 0; y < gridSize; y++)
+                {
+                    for (int x = 0; x < gridSize; x++)
+                    {
+                        if (tiles[x, y] == 1)
+                            sw.Write('#');
+                        else
+                            sw.Write('.');
+                    }
+                    sw.Write(sw.NewLine);
+                }
+                sw.Flush();
+                sw.Close();
+
+                this.Close();
+            }
+            else
+                MessageBox.Show("Invalid input: \n" + errMsg, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

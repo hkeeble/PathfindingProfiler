@@ -24,7 +24,7 @@ namespace Pathfinder
         private Texture2D tile1Texture;
         private Texture2D tile2Texture;
 
-        public IPathfinder pathfinder;
+        public Pathfinder pathfinder;
         private PathfinderAlgorithm algorithm;
 
         private string name;

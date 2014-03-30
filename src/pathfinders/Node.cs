@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Pathfinder
 {
-    class Node
+    public class Node
     {
         public Coord2 position;
         public Node parent;
@@ -17,9 +17,9 @@ namespace Pathfinder
 
         public Node()
         {
-            closed = false;
             cost = INITIAL_COST;
             inPath = false;
+            closed = false;
             parent = null;
             position = new Coord2(-1, -1);
         }

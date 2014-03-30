@@ -36,6 +36,9 @@ namespace Pathfinder
         private const string Instructions = "Right Click - Set Bot Position\nLeft Click - Set Target Position\nEnter - Find Path\nEsc - Return to Menu\nArrow Keys - Move Target Manually\nTab - Hide/Show Instructions";
         private const string HideShow = "Tab - Hide/Show Instructions";
 
+        // Current mouse coordinate position
+        Point mousePos;
+
         public static void SetMap(string mapFile)
         {
             level.LoadMap(mapFile);
@@ -85,6 +88,9 @@ namespace Pathfinder
                               new Player(playerTexture, 0, 0),
                               new AiBotBlank(botTexture, 0, 0));
 
+            // Initialize mouse position
+            mousePos = new Point(0, 0);
+
             base.LoadContent();
         }
 
@@ -112,6 +118,13 @@ namespace Pathfinder
                 spriteBatch.DrawString(mainFont, HideShow, new Vector2(0, Game.Window.ClientBounds.Height - (mainFont.MeasureString(HideShow).Y * hudScale)),
                     Color.Violet, 0.0f, Vector2.Zero, hudScale, SpriteEffects.None, 1.0f);
 
+            // Draw mouse position
+            string mousePosString = (mousePos.X < level.Map.GridSize ? Convert.ToString(mousePos.X) : "-") + "," +
+                    (mousePos.Y < level.Map.GridSize ? Convert.ToString(mousePos.Y) : "-");
+            
+            spriteBatch.DrawString(mainFont, mousePosString, new Vector2(Game.Window.ClientBounds.Width - mainFont.MeasureString(mousePosString).X - 5,
+                Game.Window.ClientBounds.Height - mainFont.MeasureString(mousePosString).Y), Color.Violet);
+
             spriteBatch.End();
         }
 
@@ -135,6 +148,7 @@ namespace Pathfinder
                 // Check for mouse clicks
                 if (InputHandler.IsMouseInWindow(GraphicsDevice.Viewport.Bounds))
                 {
+                    // Check for mouse clicks
                     if (InputHandler.IsMouseButtonPressed(MouseButton.LeftButton) || InputHandler.IsMouseButtonPressed(MouseButton.RightButton))
                     {
                         ClearAll();
@@ -155,6 +169,9 @@ namespace Pathfinder
                             }
                         }
                     }
+
+                    // Update mouse position
+                    mousePos = new Point(InputHandler.MousePosition().X / level.Map.TileSize, InputHandler.MousePosition().Y / level.Map.TileSize);
                 }
 
                 // Check for hide/show instructions
@@ -165,23 +182,40 @@ namespace Pathfinder
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Runs a test and returns the result.
+        /// </summary>
+        /// <param name="algorithm">The pathfinding algorithm to use.</param>
+        /// <param name="startPos">The starting position to use for the test.</param>
+        /// <param name="pathLength">The length in manhattan distance that the target position should be from the starting position.</param>
+        /// <param name="rand">A seeded random number generator to used to calculate a target position.</param>
+        /// <returns></returns>
         public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 startPos, Coord2 targetPos)
         {
             // Set the pathfinding algorithm
             Level.SetPathfindingAlgorithm(algorithm);
 
-            // Get Start Time
-            DateTime startTime = DateTime.Now;
+            TimeSpan timeTaken;
 
-            // Find Path
-            Level.Map.pathfinder.Build(startPos, targetPos);
+            do
+            {
+                // Get Start Time
+                DateTime startTime = DateTime.Now;
 
-            // Calculate time taken
-            DateTime finishTime = DateTime.Now;
-            TimeSpan timeTaken = finishTime - startTime;
+                // Find Path
+                Level.Map.pathfinder.Build(startPos, targetPos);
+
+                // Calculate time taken
+                DateTime finishTime = DateTime.Now;
+                timeTaken = finishTime - startTime;
+            } while (Level.Map.pathfinder.GetPath().Count() == 0); // If no path was found, try again
 
             // Return results
-            return new TestResult(timeTaken.Ticks, Level.Map.pathfinder.GetPath().Count);
+            TestResult result = new TestResult(timeTaken.Ticks, Level.Map.pathfinder.GetPath().Count);
+            if(result.PathLength == 0)
+                result.Failed = true;
+
+            return result;
         }
 
         /// <summary>

@@ -54,19 +54,16 @@ namespace Pathfinder
     /// <summary>
     /// Interface implemented by all pathfinder classes.
     /// </summary>
-    public interface IPathfinder
+    public abstract class Pathfinder
     {
-        void Build(Coord2 startPos, Coord2 targetPos);
-        void Clear();
-        bool IsInPath(int x, int y);
-        string GetName();
-        List<Coord2> GetPath();
-        void DrawPath(SpriteBatch sb);
-
-        // Usually used to retrieve data required for visual representation. These will have very different implementations for each pathfinder.
-        int GetValue(int x, int y);
-        int HighestValue();
-        int LowestValue();
+        public abstract void Build(Coord2 startPos, Coord2 targetPos);
+        public abstract void Clear();
+        public abstract void DrawPath(SpriteBatch sb);
+        public abstract bool IsInPath(int x, int y);
+        public abstract bool IsClosed(int x, int y);
+        public abstract bool IsClosed(Coord2 coord);
+        public abstract string GetName();
+        public abstract List<Coord2> GetPath();
     }
 
     /// <summary>
@@ -80,19 +77,19 @@ namespace Pathfinder
         /// <param name="algorithm">The type of algorithm the pathfinder should use.</param>
         /// <param name="gridSize">The grid size the pathfinder is to work with.</param>
         /// <returns></returns>
-        public static IPathfinder CreatePathfinder(PathfinderAlgorithm algorithm, int gridSize, Map map)
+        public static Pathfinder CreatePathfinder(PathfinderAlgorithm algorithm, int gridSize, Map map)
         {
             switch (algorithm)
             {
                 case PathfinderAlgorithm.Dijkstra:
-                    return (IPathfinder)new Dijkstra(gridSize, map);
+                    return (Pathfinder)new Dijkstra(gridSize, map);
                 case PathfinderAlgorithm.AStar:
-                    return (IPathfinder)new AStar(gridSize, map);
+                    return (Pathfinder)new AStar(gridSize, map);
                 case PathfinderAlgorithm.JPS:
-                    return (IPathfinder)new JPS(gridSize, map);
+                    return (Pathfinder)new JPS(gridSize, map);
                 default:
                     Console.WriteLine("PathfinderFactory: Attempted to create unrecognized pathfinder type. Returning Dijkstra.\n");
-                    return (IPathfinder)new Dijkstra(gridSize, map);
+                    return (Pathfinder)new Dijkstra(gridSize, map);
             }
         }
     }

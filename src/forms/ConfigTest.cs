@@ -43,31 +43,31 @@ namespace Pathfinder
             if (textBoxOutputFilename.Text.Length == 0)
             {
                 valid = false;
-                errorText += ERROR_MSG.NO_OUTPUT_FILE;
+                errorText += TCFG_ERROR_MSG.NO_OUTPUT_FILE;
             }
 
             if (textBoxDistance.Text.Length == 0)
             {
                 valid = false;
-                errorText += ERROR_MSG.NO_AVG_DIST;
+                errorText += TCFG_ERROR_MSG.NO_AVG_DIST;
             } else if (FormUtil.GetIntegerValue(textBoxDistance) == 0) {
                 valid = false;
-                errorText += ERROR_MSG.DIST_IS_ZERO;
+                errorText += TCFG_ERROR_MSG.DIST_IS_ZERO;
             }
 
             if (comboBoxAlgorithm.Text.Length == 0)
             {
                 valid = false;
-                errorText += ERROR_MSG.NO_ALGORITHM;
+                errorText += TCFG_ERROR_MSG.NO_ALGORITHM;
             }
 
             if (comboBoxNumOfTestRuns.Text.Length == 0)
             {
                 valid = false;
-                errorText += ERROR_MSG.NO_NUMBER_OF_RUNS;
+                errorText += TCFG_ERROR_MSG.NO_NUMBER_OF_RUNS;
             } else if (FormUtil.GetIntegerValue(comboBoxNumOfTestRuns) == 0) {
                 valid = false;
-                errorText += ERROR_MSG.RUNS_IS_ZERO;
+                errorText += TCFG_ERROR_MSG.RUNS_IS_ZERO;
             }
 
             if(!valid)

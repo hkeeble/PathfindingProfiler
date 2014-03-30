@@ -26,7 +26,7 @@ namespace Pathfinder
             nodes.Get(startPos.X, startPos.Y).cost = 0;
             bool firstLoop = true;
 
-            while (nodes.Get(targetPos).closed == false)
+            while (!IsClosed(targetPos))
             {
                 if (firstLoop)
                 {
@@ -136,7 +136,7 @@ namespace Pathfinder
 
                 if(dx != 0 && dy != 0) // Diagonal search
                 {
-                    if (!map.IsBlocked(node.position.X, node.position.Y + (int)dy))
+                    if (!map.IsBlocked(node.position.X, node.position.Y + dy))
                         neighbours.Add(nodes.Get(node.position.X, node.position.Y + dy));
 
                     if (!map.IsBlocked(node.position.X + dx, node.position.Y))
@@ -165,7 +165,7 @@ namespace Pathfinder
                             if (map.IsBlocked(node.position.X + 1, node.position.Y))
                                 neighbours.Add(nodes.Get(node.position.X + 1, node.position.Y + dy));
                             if (map.IsBlocked(node.position.X - 1, node.position.Y))
-                                neighbours.Add(nodes.Get(node.position.X + 1, node.position.Y + dy));
+                                neighbours.Add(nodes.Get(node.position.X - 1, node.position.Y + dy));
                         }
                     }
                     else if (node.position.X + dx > 0 && node.position.X + dx < GridSize)
@@ -192,7 +192,7 @@ namespace Pathfinder
 
         private Coord2? Jump(Coord2 pos, Vector2 dir)
         {
-            if(nodes.Get(pos.X, pos.Y).closed == false)
+            if(!IsClosed(pos))
                 map.SetRenderColor(pos, Color.GhostWhite);
 
             // Position of the new node that will be considered
@@ -237,7 +237,7 @@ namespace Pathfinder
                     return newLoc;
             }
 
-            // If no forced neighbour, resursively call into new jump point
+            // If no forced neighbour, recursively call into new jump point
             return Jump(newLoc, dir);
         }
     }

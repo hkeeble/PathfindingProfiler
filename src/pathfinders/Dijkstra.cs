@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pathfinder
 {
-    class Dijkstra : IPathfinder
+    class Dijkstra : Pathfinder
     {
         protected int GridSize { get; set; }
         protected string Name { get; set; }
@@ -46,12 +46,12 @@ namespace Pathfinder
             this.map = map;
         }
 
-        public virtual string GetName()
+        public override string GetName()
         {
             return Name;
         }
 
-        public virtual void Build(Coord2 startPos, Coord2 targetPos)
+        public override void Build(Coord2 startPos, Coord2 targetPos)
         {
             path = new List<Coord2>();
             nodes = new NodeCollection(GridSize);
@@ -63,7 +63,7 @@ namespace Pathfinder
             nodes.Get(startPos).cost = 0;
             bool firstLoop = true;
 
-            while (nodes.Get(targetPos).closed == false)
+            while (!target.closed)
             {
                 if (firstLoop)
                 {
@@ -87,8 +87,9 @@ namespace Pathfinder
                 RecalculateCosts(neighbours, currentLowest);
             }
 
-            // Trace the completed path
-            TracePath();
+            // Trace the completed path, if target has been found
+            if(target.parent != null)
+                TracePath();
         }
 
         protected virtual List<Node> GetNeighours(Node node)
@@ -96,29 +97,29 @@ namespace Pathfinder
             List<Node> list = new List<Node>();
 
             // Horizontal and vertical
-            if (nodes.IsValid(node.position + new Coord2(1, 0)))
+            if (map.ValidPosition(node.position + new Coord2(1, 0)))
                 list.Add(nodes.Get(node.position + new Coord2(1, 0)));
 
-            if (nodes.IsValid(node.position + new Coord2(-1, 0)))
+            if (map.ValidPosition(node.position + new Coord2(-1, 0)))
                 list.Add(nodes.Get(node.position + new Coord2(-1, 0)));
 
-            if (nodes.IsValid(node.position + new Coord2(0, 1)))
+            if (map.ValidPosition(node.position + new Coord2(0, 1)))
                 list.Add(nodes.Get(node.position + new Coord2(0, 1)));
 
-            if (nodes.IsValid(node.position + new Coord2(0, -1)))
+            if (map.ValidPosition(node.position + new Coord2(0, -1)))
                 list.Add(nodes.Get(node.position + new Coord2(0, -1)));
 
             // Diagonal
-            if (nodes.IsValid(node.position + new Coord2(1, 1)))
+            if (map.ValidPosition(node.position + new Coord2(1, 1)))
                 list.Add(nodes.Get(node.position + new Coord2(1, 1)));
 
-            if (nodes.IsValid(node.position + new Coord2(-1, -1)))
+            if (map.ValidPosition(node.position + new Coord2(-1, -1)))
                 list.Add(nodes.Get(node.position + new Coord2(-1, -1)));
 
-            if (nodes.IsValid(node.position + new Coord2(1, -1)))
+            if (map.ValidPosition(node.position + new Coord2(1, -1)))
                 list.Add(nodes.Get(node.position + new Coord2(1, -1)));
 
-            if (nodes.IsValid(node.position + new Coord2(-1, 1)))
+            if (map.ValidPosition(node.position + new Coord2(-1, 1)))
                 list.Add(nodes.Get(node.position + new Coord2(-1, 1)));
 
             return list;
@@ -215,33 +216,38 @@ namespace Pathfinder
             }
         }
 
-        public void DrawPath(SpriteBatch sb)
+        public override void DrawPath(SpriteBatch sb)
         {
             if(pathConnectors.Count > 0)
                 foreach (Line l in pathConnectors)
                     l.Draw(sb);
         }
 
-        public bool IsInPath(int x, int y)
+        public override bool IsInPath(int x, int y)
         {
             return path.Contains(new Coord2(x, y));
         }
 
         public List<Coord2> Path { get { return path; } }
 
-        public void Clear()
+        public override void Clear()
         {
             path.Clear();
             nodes.Clear();
             pathConnectors.Clear();
         }
 
-        public int GetValue(int x, int y)
+        public override bool IsClosed(int x, int y)
         {
-            return Convert.ToInt16(nodes.Get(x, y).closed);
+            return nodes.Get(x, y).closed;
         }
 
-        public List<Coord2> GetPath()
+        public override bool IsClosed(Coord2 coord)
+        {
+            return nodes.Get(coord.X, coord.Y).closed;
+        }
+
+        public override List<Coord2> GetPath()
         {
             return path;
         }

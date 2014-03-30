@@ -54,7 +54,7 @@ namespace Pathfinder
                 {
                     // If cost is lower than current, position not closed, and position is valid within level, new lowest is found
                     if (nodes.Get(currentLowest.position.X, currentLowest.position.Y).cost + manhattanDist(currentLowest.position, target.position) >= nodes.Get(x, y).cost + manhattanDist(new Coord2(x, y), target.position) &&
-                        nodes.Get(x, y).closed == false && map.ValidPosition(new Coord2(x, y)))
+                        nodes.Get(x,y).closed == false && map.ValidPosition(new Coord2(x, y)))
                         currentLowest = nodes.Get(x, y);
                 }
             }
