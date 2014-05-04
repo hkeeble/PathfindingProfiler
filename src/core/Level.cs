@@ -29,6 +29,17 @@ namespace Pathfinder
         public void SetPathfindingAlgorithm(PathfinderAlgorithm algorithm)
         {
             map.SetPathfinder(algorithm);
+            SetBotType(algorithm);
+        }
+
+        private void SetBotType(PathfinderAlgorithm algorithm)
+        {
+            if (algorithm == PathfinderAlgorithm.Dijkstra || algorithm == PathfinderAlgorithm.AStar)
+                bot = new AiBotDijkstra(bot.Texture, bot.GridPosition.X, bot.GridPosition.Y);
+            else if (algorithm == PathfinderAlgorithm.ScentMap)
+                bot = new AiBotScent(bot.Texture, bot.GridPosition.X, bot.GridPosition.Y);
+            else
+                Console.WriteLine("Could not set bot type, unrecognized algorithm.");
         }
 
         public void SetPlayerPosition(Coord2 newPos)
@@ -47,8 +58,13 @@ namespace Pathfinder
             HandlePlayerMovement();
 
             // Update the pathfinder
-            if(InputHandler.IsKeyPressed(Keys.Enter))
+            if (map.pathfinder.GetAlgorithm() == PathfinderAlgorithm.ScentMap)
                 map.pathfinder.Build(bot.GridPosition, player.GridPosition);
+            else
+            {
+                if (InputHandler.IsKeyPressed(Keys.Enter))
+                    map.pathfinder.Build(bot.GridPosition, player.GridPosition);
+            }
 
             // Update bot and player
             bot.Update(gameTime, map, player);

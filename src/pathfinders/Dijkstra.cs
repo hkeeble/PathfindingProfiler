@@ -25,7 +25,7 @@ namespace Pathfinder
 
         protected Node currentLowest;
 
-        private Profile profile;
+        protected int searchedNodes;
 
         // Visualization Colors
         private Color CLOSED_COLOR    = Color.Cyan;
@@ -38,7 +38,6 @@ namespace Pathfinder
         public Dijkstra(int gridSize, Map map)
         {
             Name = "Dijkstra";
-            profile = new Profile("Dijkstra Path Time");
             GridSize = gridSize;
             nodes = new NodeCollection(gridSize);
             path = new List<Coord2>();
@@ -51,10 +50,12 @@ namespace Pathfinder
             return Name;
         }
 
-        public override void Build(Coord2 startPos, Coord2 targetPos)
+        public override void Build(Coord2 startPos, Coord2 targetPos, bool testMode = false)
         {
             path = new List<Coord2>();
             nodes = new NodeCollection(GridSize);
+
+            searchedNodes = 0;
 
             this.start = nodes.Get(startPos);
             this.target = nodes.Get(targetPos);
@@ -85,6 +86,9 @@ namespace Pathfinder
 
                 // Recalculate Costs
                 RecalculateCosts(neighbours, currentLowest);
+
+                // Update number of searched nodes
+                searchedNodes++;
             }
 
             // Trace the completed path, if target has been found
@@ -194,6 +198,9 @@ namespace Pathfinder
                     done = true;
             }
 
+            // Inverse the path such that list is coords from bot to player
+            path.Reverse();
+
             // Create path line
             pathConnectors.Clear();
             for (int i = 0; i < path.Count; i++)
@@ -209,11 +216,16 @@ namespace Pathfinder
                 else
                 {
                     lstart = new Point(path[i].X * map.TileSize + (map.TileSize / 2), path[i].Y * map.TileSize + (map.TileSize / 2));
-                    lend = new Point(start.position.X * map.TileSize + (map.TileSize / 2), start.position.Y * map.TileSize + (map.TileSize / 2));
+                    lend = new Point(target.position.X * map.TileSize + (map.TileSize / 2), target.position.Y * map.TileSize + (map.TileSize / 2));
                 }
 
                 pathConnectors.Add(new Line(lstart, lend, Color.Red, 3, GameUtils.GetUtil<GraphicsDevice>()));
             }
+        }
+
+        public override int NodesSearched()
+        {
+            return searchedNodes;
         }
 
         public override void DrawPath(SpriteBatch sb)
@@ -250,6 +262,11 @@ namespace Pathfinder
         public override List<Coord2> GetPath()
         {
             return path;
+        }
+
+        public override PathfinderAlgorithm GetAlgorithm()
+        {
+            return PathfinderAlgorithm.Dijkstra;
         }
 
         // Unused interface methods

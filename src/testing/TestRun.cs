@@ -16,7 +16,10 @@ namespace Pathfinder
 
         private int percOnlastUpdate = 0;
 
-        private const double MS_PER_TICK = 0.0001;
+        TimeSpan currentTimeEstimate;
+
+        const int ITERATIONS_PER_ESTIMATION = 20;
+        int currentIterations;
 
         public TestRun()
         {
@@ -48,6 +51,17 @@ namespace Pathfinder
             // Initialize percentage on last update
             percOnlastUpdate = 0;
 
+            // Initialize config display
+            configTextBox.Text += "Algorithm: " + config.Algorithm.ToString() + "\n";
+            configTextBox.Text += "Map: " + config.MapName + "\n";
+            configTextBox.Text += "Path Distance: " + config.PathDistance + "\n";
+            configTextBox.Text += "Running " + config.NumberOfTestRuns + " tests.\n";
+            configTextBox.Text += "Outputting results to " + config.OutputFile + ".txt\n";
+
+            // Initialize timing calculations
+            currentTimeEstimate = TimeSpan.Zero;
+            currentIterations = 0;
+
             // Run background worker thread
             worker.RunWorkerAsync();
         }
@@ -58,11 +72,35 @@ namespace Pathfinder
         private void workerReport(object sender, ProgressChangedEventArgs args)
         {
             TestWorker wrkr = sender as TestWorker;
+            TestProgress progress = (TestProgress)args.UserState;
 
-            percLabel.Text = Convert.ToString(args.ProgressPercentage);
+
+            EstimateTimeRemaining(progress);
+
+            percLabel.Text = Convert.ToString(args.ProgressPercentage) + "%" + " (" + progress.TestsComplete + "/" + progress.TestsToDo + ")";
             progressBarTests.Increment(args.ProgressPercentage - percOnlastUpdate);
             percOnlastUpdate = args.ProgressPercentage;
             this.Refresh();
+        }
+
+        private void EstimateTimeRemaining(TestProgress progress)
+        {
+            currentIterations++;
+
+            if (currentIterations >= ITERATIONS_PER_ESTIMATION)
+            {
+                TimeSpan currentTimeEstimate = TimeSpan.FromTicks(progress.AverageTestDuration.Ticks * (progress.TestsToDo - progress.TestsComplete));
+                string timeString = "";
+                if (currentTimeEstimate.Hours != 0)
+                    timeString += currentTimeEstimate.Hours + " hour(s), ";
+                if (currentTimeEstimate.Minutes != 0)
+                    timeString += currentTimeEstimate.Minutes + " minute(s), ";
+                timeString += currentTimeEstimate.Seconds + " second(s)";
+
+                timeRemainingLabel.Text = timeString;
+
+                currentIterations = 0;
+            }
         }
 
         /// <summary>
@@ -73,12 +111,16 @@ namespace Pathfinder
             e.Config.SetEndTime(DateTime.Now);
 
             progressBarTests.Value = progressBarTests.Maximum;
-            percLabel.Text = "100";
+            percLabel.Text = "100%";
             this.Refresh();
 
-            MessageBox.Show("Test completed!", "Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            OutputResults(e.Results, e.Config);
+            if (e.Results.Count == e.Config.NumberOfTestRuns)
+            {
+                MessageBox.Show("Test completed!", "Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                OutputResults(e.Results, e.Config);
+            }
+            else
+                MessageBox.Show("Test worker exited unexpectedly!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             this.Close();
         }
@@ -102,13 +144,18 @@ namespace Pathfinder
             }
 
             sw.Write("Test Run On: " + config.StartTime.ToLongDateString() + " at " + config.EndTime.ToLongTimeString() + sw.NewLine + sw.NewLine);
+
             sw.Write("----- Configuration -----" + sw.NewLine);
+            sw.Write("Algorithm: " + config.Algorithm.ToString() + sw.NewLine);
             sw.Write("Map: " + config.MapName + sw.NewLine);
             sw.Write("Number of Obstacles on Map: " + config.NumberOfObstacles + sw.NewLine);
-            sw.Write("Manhattan distance between start and target: " + config.PathDistance + sw.NewLine + sw.NewLine);
+            sw.Write("Manhattan distance between start and target: " + config.PathDistance + sw.NewLine);
+            sw.Write("Number of tests: " + config.NumberOfTestRuns + sw.NewLine + sw.NewLine);
+
             sw.Write("----- Results ----" + sw.NewLine);
-            sw.Write("Average path length: " + results.AverageLength + sw.NewLine);
-            sw.Write("Average ms taken: " + ((double)results.AverageTicksForPath * MS_PER_TICK) + sw.NewLine);
+            sw.Write("Average path length: \t\t" + results.AverageLength + " (STDEV: " + results.STDEVLength + ")" + sw.NewLine);
+            sw.Write("Average nodes searched: \t" + results.AveragedNodesSearched + " (STDEV: " + results.STDEVNodesSearched + ")" + sw.NewLine);
+            sw.Write("Average ms taken: \t\t" + ((double)results.AverageTicksForPath * TestResult.MS_PER_TICK) + " (STDEV: " + results.STDEVMillisecondsTaken + ")" + sw.NewLine);
 
             sw.Flush();
             sw.Close();

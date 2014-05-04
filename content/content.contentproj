@@ -130,10 +130,6 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
-    <None Include="Maps\testmap.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Name>testmap</Name>
-    </None>
     <None Include="Maps\0.map">
       <Name>0</Name>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -69,5 +69,10 @@ namespace Pathfinder
                 dist.Y *= -1;
             return dist.X + dist.Y;
         }
+
+        public override PathfinderAlgorithm GetAlgorithm()
+        {
+            return PathfinderAlgorithm.AStar;
+        }
     }
 }

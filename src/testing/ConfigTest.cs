@@ -6,7 +6,6 @@
  * Program: Pathfinding Profiler
  * 
  * Desc: Declares and defines the event handlers for the test configuration windows form.
- * 
  */
 using System;
 using System.Collections.Generic;
@@ -46,11 +45,13 @@ namespace Pathfinder
                 errorText += TCFG_ERROR_MSG.NO_OUTPUT_FILE;
             }
 
-            if (textBoxDistance.Text.Length == 0)
+            if (numericUpDownDist.Value == 0)
             {
                 valid = false;
                 errorText += TCFG_ERROR_MSG.NO_AVG_DIST;
-            } else if (FormUtil.GetIntegerValue(textBoxDistance) == 0) {
+            }
+            else if (FormUtil.GetIntegerValue(numericUpDownDist) == 0)
+            {
                 valid = false;
                 errorText += TCFG_ERROR_MSG.DIST_IS_ZERO;
             }
@@ -61,11 +62,13 @@ namespace Pathfinder
                 errorText += TCFG_ERROR_MSG.NO_ALGORITHM;
             }
 
-            if (comboBoxNumOfTestRuns.Text.Length == 0)
+            if (numericUpDownNOfRuns.Value == 0)
             {
                 valid = false;
                 errorText += TCFG_ERROR_MSG.NO_NUMBER_OF_RUNS;
-            } else if (FormUtil.GetIntegerValue(comboBoxNumOfTestRuns) == 0) {
+            }
+            else if (FormUtil.GetIntegerValue(numericUpDownNOfRuns) == 0)
+            {
                 valid = false;
                 errorText += TCFG_ERROR_MSG.RUNS_IS_ZERO;
             }
@@ -86,12 +89,12 @@ namespace Pathfinder
                     algo = PathfinderAlgorithm.AStar;
                 else if (comboBoxAlgorithm.Text == "Dijkstra")
                     algo = PathfinderAlgorithm.Dijkstra;
-                else if (comboBoxAlgorithm.Text == "JPS")
-                    algo = PathfinderAlgorithm.JPS;
+                else if (comboBoxAlgorithm.Text == "Scent Map")
+                    algo = PathfinderAlgorithm.ScentMap;
 
                 // Set up the test configuration
-                TestConfig config = new TestConfig(Convert.ToInt32(textBoxDistance.Text),
-                                                Convert.ToInt32(comboBoxNumOfTestRuns.Text),
+                TestConfig config = new TestConfig(Convert.ToInt32(numericUpDownDist.Value),
+                                                Convert.ToInt32(numericUpDownNOfRuns.Text),
                                                 textBoxOutputFilename.Text, algo,
                                                 LevelHandler.Level.Map,
                                                 LevelHandler.Level.Map.Name);

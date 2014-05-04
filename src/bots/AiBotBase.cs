@@ -17,10 +17,7 @@ namespace Pathfinder
     /// </summary>
     abstract class AiBotBase : Entity
     {
-        // Current index in the path given
-        public int currentPathIndex;
-
-        public AiBotBase(Texture2D texture, int x, int y) : base(texture, x, y, 400) { }
+        public AiBotBase(Texture2D texture, int x, int y) : base(texture, x, y, 200) { }
 
         /// <summary>
         /// Sets target position: the next grid location to move to
@@ -51,6 +48,7 @@ namespace Pathfinder
                 ChooseNextGridLocation(level, plr);
                 timerMs = moveTime;
             }
+
             //calculate screen position
             screenPosition = (gridPosition * 15) + ((((targetPosition * 15) - (gridPosition * 15)) * (moveTime - timerMs)) / moveTime);
         }

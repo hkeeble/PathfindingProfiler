@@ -40,5 +40,6 @@ namespace Pathfinder
 
         public Coord2 GridPosition { get { return gridPosition; } }
         public Coord2 ScreenPosition { get { return screenPosition; } }
+        public Texture2D Texture { get { return texture; } }
     }
 }

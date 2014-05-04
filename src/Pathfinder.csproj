@@ -121,14 +121,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AiBotBase.cs" />
-    <Compile Include="AiBotBlank.cs" />
-    <Compile Include="Coord2.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="forms\ConfigTest.cs">
+    <Compile Include="bots\AiBotBase.cs" />
+    <Compile Include="bots\AiBotDijkstra.cs" />
+    <Compile Include="Utils\Coord2.cs" />
+    <Compile Include="core\Entity.cs" />
+    <Compile Include="testing\ConfigTest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\ConfigTest.Designer.cs">
+    <Compile Include="testing\ConfigTest.Designer.cs">
       <DependentUpon>ConfigTest.cs</DependentUpon>
     </Compile>
     <Compile Include="forms\FormUtil.cs" />
@@ -138,26 +138,26 @@
     <Compile Include="forms\GenerateMap.Designer.cs">
       <DependentUpon>GenerateMap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Line.cs" />
+    <Compile Include="Utils\Line.cs" />
     <Compile Include="map\Tile.cs" />
-    <Compile Include="pathfinders\JPS.cs" />
+    <Compile Include="pathfinders\ScentMap.cs" />
     <Compile Include="testing\TestCompletedEvent.cs" />
     <Compile Include="testing\TestData.cs" />
-    <Compile Include="forms\TestRun.cs">
+    <Compile Include="testing\TestRun.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="forms\TestRun.Designer.cs">
+    <Compile Include="testing\TestRun.Designer.cs">
       <DependentUpon>TestRun.cs</DependentUpon>
     </Compile>
     <Compile Include="testing\TestWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GameUtils.cs" />
-    <Compile Include="InputHandler.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="LevelHandler.cs" />
+    <Compile Include="Utils\GameUtils.cs" />
+    <Compile Include="Utils\InputHandler.cs" />
+    <Compile Include="core\Level.cs" />
+    <Compile Include="core\LevelHandler.cs" />
     <Compile Include="map\Map.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="core\Main.cs" />
     <Compile Include="menu\Button.cs" />
     <Compile Include="menu\Menu.cs" />
     <Compile Include="menu\TextMenuItem.cs" />
@@ -165,10 +165,10 @@
     <Compile Include="pathfinders\AStar.cs" />
     <Compile Include="pathfinders\Dijkstra.cs" />
     <Compile Include="pathfinders\Pathfinder.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="core\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScentBot.cs" />
+    <Compile Include="bots\AiBotScent.cs" />
     <Compile Include="menu\TextBox.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -227,13 +227,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="forms\ConfigTest.resx">
+    <EmbeddedResource Include="testing\ConfigTest.resx">
       <DependentUpon>ConfigTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="forms\GenerateMap.resx">
       <DependentUpon>GenerateMap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="forms\TestRun.resx">
+    <EmbeddedResource Include="testing\TestRun.resx">
       <DependentUpon>TestRun.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -101,20 +101,25 @@ namespace Pathfinder
     /* Represents the results of a given test */
     public struct TestResult
     {
-        public TestResult(long ticks, int pLength)
+        public static double MS_PER_TICK = 0.0001;
+
+        public TestResult(long ticks, int pLength, int nodesSearched)
         {
             ticksForPath = ticks;
             pathLength = pLength;
+            this.nodesSearched = nodesSearched;
             failed = false;
         }
 
         private long ticksForPath;
         private int pathLength;
+        private int nodesSearched;
         private bool failed;
 
         public long TicksForPath { get { return ticksForPath; } }
         public int PathLength { get { return pathLength; } }
         public bool Failed { get { return failed; } set { failed = value; } }
+        public int NodesSearched { get { return nodesSearched; } }
     }
 
     /* Represents a collection of test results */
@@ -131,6 +136,8 @@ namespace Pathfinder
         {
             results.Add(result);
         }
+
+        public int Count { get { return results.Count; } }
 
         public int AverageLength
         {
@@ -153,5 +160,120 @@ namespace Pathfinder
                 return tot / results.Count;
             }
         }
+
+        public int AveragedNodesSearched
+        {
+            get
+            {
+                int tot = 0;
+                foreach (TestResult r in results)
+                    tot += r.NodesSearched;
+                return tot / results.Count;
+            }
+        }
+
+        public double STDEVLength
+        {
+            get 
+            {
+                List<int> lengths = new List<int>();
+                foreach(TestResult result in results)
+                    lengths.Add(result.PathLength);
+                return StandardDeviation<int>(lengths);
+            }
+        }
+
+        public double STDEVMillisecondsTaken
+        {
+            get
+            {
+                List<double> ticks = new List<double>();
+                foreach (TestResult result in results)
+                    ticks.Add((double)result.TicksForPath * TestResult.MS_PER_TICK);
+                return StandardDeviation<double>(ticks);
+            }
+        }
+
+        public double STDEVNodesSearched
+        {
+            get
+            {
+                List<int> nodesSearched = new List<int>();
+                foreach (TestResult result in results)
+                    nodesSearched.Add(result.NodesSearched);
+                return StandardDeviation<int>(nodesSearched);
+            }
+        }
+
+       public static double StandardDeviation<T>(List<T> data)
+       {
+           if (data.Count > 0)
+           {
+               if (data[0].GetType() == typeof(int)) // For integer values
+               {
+                   int mean;
+                   int tot = 0;
+                   foreach (T element in data)
+                       tot += (int)Convert.ChangeType(element, typeof(int));
+                   mean = tot / data.Count;
+                   List<int> squaredDifferences = new List<int>();
+                   foreach (T element in data)
+                       squaredDifferences.Add((int)Math.Pow((int)Convert.ChangeType(element, typeof(int)) - mean, 2));
+                   tot = 0;
+                   foreach (int element in squaredDifferences)
+                       tot += element;
+                   double variance = tot / squaredDifferences.Count;
+                   return Math.Sqrt(variance);
+               }
+               else if (data[0].GetType() == typeof(double)) // For long values
+               {
+                   double mean;
+                   double tot = 0;
+                   foreach (T element in data)
+                       tot += (double)Convert.ChangeType(element, typeof(double));
+                   mean = tot / data.Count;
+                   List<double> squaredDifferences = new List<double>();
+                   foreach (T element in data)
+                       squaredDifferences.Add((long)Math.Pow((double)Convert.ChangeType(element, typeof(double)) - mean, 2));
+                   tot = 0;
+                   foreach (double element in squaredDifferences)
+                       tot += element;
+                   double variance = tot / squaredDifferences.Count;
+                   return Math.Sqrt(variance);
+               }
+               else
+               {
+                   Console.WriteLine("Error! Type of data list for standard deviation calculation was unrecognized.");
+                   return 0;
+               }
+           }
+           else
+           {
+               Console.WriteLine("Error! Data passed to standadrd deviation is empty.");
+               return 0;
+           }
+       }
+    }
+
+    /* Represents the progress of a test. */
+    public struct TestProgress
+    {
+        public TestProgress(int testsComplete, int testsToDo, TimeSpan averageTestDuration)
+        {
+            this.testsComplete = testsComplete;
+            this.testsToDo = testsToDo;
+            this.averageTestDuration = averageTestDuration;
+            this.percComplete = (int)((float)100 / (float)testsToDo) * testsComplete;
+        }
+
+        private int testsComplete;
+        private int testsToDo;
+        private int percComplete;
+        private TimeSpan averageTestDuration;
+
+        public int TestsComplete { get { return testsComplete; } }
+        public int TestsToDo { get { return testsToDo; } }
+        public int PercentComplete { get { return percComplete; } }
+        public TimeSpan AverageTestDuration { get { return averageTestDuration; } }
     }
 }

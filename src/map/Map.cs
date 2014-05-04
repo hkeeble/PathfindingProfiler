@@ -58,7 +58,6 @@ namespace Pathfinder
         {
             this.algorithm = algorithm;
             pathfinder = PathfinderFactory.CreatePathfinder(algorithm, gridSize, this);
-            Console.WriteLine("Map.cs: Pathfinding algorithm set to " + pathfinder.GetName() + ".\n");
         }
 
         // Get Accessors
@@ -75,9 +74,13 @@ namespace Pathfinder
         /// <returns></returns>
         public bool ValidPosition(Coord2 pos)
         {
-            if (!IsWithinMap(pos)) return false;
-            if (IsBlocked(pos))    return false;
-            else                   return true;
+            return IsWithinMap(pos) && !IsBlocked(pos);
+        }
+
+        public bool ValidPosition(int x, int y)
+        {
+            Coord2 pos = new Coord2(x, y);
+            return IsWithinMap(pos) && !IsBlocked(pos);
         }
 
         /// <summary>

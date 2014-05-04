@@ -39,6 +39,9 @@ namespace Pathfinder
         // Current mouse coordinate position
         Point mousePos;
 
+        // Random number generator
+        private static Random rand;
+
         public static void SetMap(string mapFile)
         {
             level.LoadMap(mapFile);
@@ -62,7 +65,7 @@ namespace Pathfinder
         public LevelHandler(Game game)
             : base(game)
         {
-
+            rand = new Random(DateTime.Now.Millisecond);
         }
 
         public override void Initialize()
@@ -84,9 +87,10 @@ namespace Pathfinder
             // Load Font
             mainFont = Game.Content.Load<SpriteFont>("Fonts/bmpFont");
 
+            // Initialize the level
             level = new Level(new Map(tileTexture1, tileTexture2),
                               new Player(playerTexture, 0, 0),
-                              new AiBotBlank(botTexture, 0, 0));
+                              new AiBotDijkstra(botTexture, 0, 0));
 
             // Initialize mouse position
             mousePos = new Point(0, 0);
@@ -190,32 +194,40 @@ namespace Pathfinder
         /// <param name="pathLength">The length in manhattan distance that the target position should be from the starting position.</param>
         /// <param name="rand">A seeded random number generator to used to calculate a target position.</param>
         /// <returns></returns>
-        public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 startPos, Coord2 targetPos)
+        public static TestResult RunTest(PathfinderAlgorithm algorithm, Coord2 startPos, List<Coord2> possibleTargets)
         {
+            // Initialize result collection
+            TestResultCollection results = new TestResultCollection();
+
             // Set the pathfinding algorithm
             Level.SetPathfindingAlgorithm(algorithm);
 
+            // Create time take variable
             TimeSpan timeTaken;
+
+            // The target position
+            Coord2 targetPos;
 
             do
             {
+                // Find random target
+                do {
+                    targetPos = possibleTargets[rand.Next(0, possibleTargets.Count)];
+                } while (!level.Map.ValidPosition(targetPos));
+
                 // Get Start Time
                 DateTime startTime = DateTime.Now;
 
                 // Find Path
-                Level.Map.pathfinder.Build(startPos, targetPos);
+                Level.Map.pathfinder.Build(startPos, targetPos, true);
 
                 // Calculate time taken
                 DateTime finishTime = DateTime.Now;
                 timeTaken = finishTime - startTime;
             } while (Level.Map.pathfinder.GetPath().Count() == 0); // If no path was found, try again
 
-            // Return results
-            TestResult result = new TestResult(timeTaken.Ticks, Level.Map.pathfinder.GetPath().Count);
-            if(result.PathLength == 0)
-                result.Failed = true;
-
-            return result;
+            // Return result
+            return new TestResult(timeTaken.Ticks, Level.Map.pathfinder.GetPath().Count(), Level.Map.pathfinder.NodesSearched());
         }
 
         /// <summary>

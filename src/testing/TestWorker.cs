@@ -53,7 +53,7 @@ namespace Pathfinder
                 possibleTargets.Add(new Coord2(topLeft.X, topLeft.Y + y));
                 possibleTargets.Add(new Coord2(topLeft.X + (config.PathDistance*2), topLeft.Y + y));
             }
-
+            
             for (int i = 0; i < config.NumberOfTestRuns; i++)
             {
                 if (!CheckCancellation())
@@ -65,14 +65,15 @@ namespace Pathfinder
                     TestResult result = new TestResult();
                     do
                     {
-                        result = LevelHandler.RunTest(config.Algorithm, startPos, targetPos);
+                        result = LevelHandler.RunTest(config.Algorithm, startPos, possibleTargets);
                     } while (result.Failed == true); // If the result reported a failure, run it again
 
                     // Add the result
                     results.Add(result);
 
                     // Report the thread's current progress
-                    ReportProgress((int)(100/config.NumberOfTestRuns)*(i+1), null);
+                    ReportProgress((int)(((float)100/(float)config.NumberOfTestRuns)*(i+1)), new TestProgress(i+1, config.NumberOfTestRuns,
+                        new TimeSpan(results.AverageTicksForPath)));
                 }
                 else
                     break;
