@@ -5,7 +5,6 @@ which to profile the performance of each algorithm. The program is written in C#
 ## Included Algorithms
 * Dijkstra
 * A Star
-* Jump Point Search
 * Scent Algorithm
 
 ## Features
