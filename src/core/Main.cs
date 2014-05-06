@@ -1,3 +1,13 @@
+/*
+ * File: Main.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines the main game component for this project.
+ * */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +31,7 @@ namespace Pathfinder
         SpriteBatch spriteBatch;
         
         // Components
-        Menu menu;
+        ProfilerMenu menu;
         InputHandler input;
         LevelHandler levelHandler;
 
@@ -43,7 +53,7 @@ namespace Pathfinder
             TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / TargetFrameRate);
 
             // Add Components
-            menu = new Menu(this);
+            menu = new ProfilerMenu(this);
             input = new InputHandler(this);
             levelHandler = new LevelHandler(this);
 
@@ -55,7 +65,7 @@ namespace Pathfinder
             levelHandler.Enabled = false;
             levelHandler.Visible = false;
 
-            SetState(typeof(Menu));
+            SetState(typeof(ProfilerMenu));
         }
 
         protected override void Initialize()

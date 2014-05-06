@@ -6,7 +6,6 @@
  * Program: Pathfinding Profiler
  * 
  * Desc: Declares and defines several data structures used by the pathfinding testing system.
- * 
  * */
 using System;
 using System.Collections.Generic;
@@ -29,14 +28,16 @@ namespace Pathfinder
     }
 
     /// <summary>
-    /// Contains error messages for th map generation form.
+    /// Contains error messages for the map generation form.
     /// </summary>
     struct MG_ERROR_MSG
     {
         public const string NO_NAME = "Enter a map name.\n";
     }
 
-    /* Represents a test configuration */
+    /// <summary>
+    /// Represents a test configuration.
+    /// </summary>
     public struct TestConfig
     {
         public TestConfig(int pathDist, int nRuns, string output, PathfinderAlgorithm al, Map map, string mapName)
@@ -98,7 +99,9 @@ namespace Pathfinder
         public int NumberOfObstacles { get { return nOfObstacles; } }
     }
 
-    /* Represents the results of a given test */
+    /// <summary>
+    /// Represents the results of an individual test.
+    /// </summary>
     public struct TestResult
     {
         public static double MS_PER_TICK = 0.0001;
@@ -122,14 +125,18 @@ namespace Pathfinder
         public int NodesSearched { get { return nodesSearched; } }
     }
 
-    /* Represents a collection of test results */
+    /// <summary>
+    /// Represents a collection of test results.
+    /// </summary>
     public class TestResultCollection
     {
-        private List<TestResult> results;
+        private List<TestResult> results; /* The list of test results. */
+        private bool cancelled;         /* Whether or not the test has been cancelled. */
 
         public TestResultCollection()
         {
             results = new List<TestResult>();
+            cancelled = false;
         }
 
         public void Add(TestResult result)
@@ -137,8 +144,27 @@ namespace Pathfinder
             results.Add(result);
         }
 
+        /// <summary>
+        /// Inform the results that the test was cancelled by the user before completion.
+        /// </summary>
+        public void Cancel()
+        {
+            cancelled = true;
+        }
+
+        /// <summary>
+        /// Retrieve whether or not the test was cancelled by the user.
+        /// </summary>
+        public bool Cancelled { get { return cancelled; } }
+
+        /// <summary>
+        /// Retrieve the number of test results.
+        /// </summary>
         public int Count { get { return results.Count; } }
 
+        /// <summary>
+        /// The current average path length in the test results.
+        /// </summary>
         public int AverageLength
         {
             get
@@ -150,6 +176,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// The current average number of ticks required to find each path in the collection.
+        /// </summary>
         public long AverageTicksForPath
         {
             get
@@ -161,6 +190,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// The current average number of nodes searched when finding each path in the collection.
+        /// </summary>
         public int AveragedNodesSearched
         {
             get
@@ -172,6 +204,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Returns the current standard deviation of the collection of path lengths.
+        /// </summary>
         public double STDEVLength
         {
             get 
@@ -183,6 +218,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Returns the current standard deviation of the time taken to find each path in milliseconds.
+        /// </summary>
         public double STDEVMillisecondsTaken
         {
             get
@@ -194,6 +232,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Returns the current standard deviation of the number of nodes searched to find each path in the collection.
+        /// </summary>
         public double STDEVNodesSearched
         {
             get
@@ -205,7 +246,13 @@ namespace Pathfinder
             }
         }
 
-       public static double StandardDeviation<T>(List<T> data)
+        /// <summary>
+        /// Returns the standard deviation of a collection of data. Generic function, accepts either double or int data types.
+        /// </summary>
+        /// <typeparam name="T">The type of data being processed.</typeparam>
+        /// <param name="data">The collection of data to find the standard deviation for.</param>
+        /// <returns></returns>
+       private static double StandardDeviation<T>(List<T> data)
        {
            if (data.Count > 0)
            {
@@ -258,6 +305,12 @@ namespace Pathfinder
     /* Represents the progress of a test. */
     public struct TestProgress
     {
+        /// <summary>
+        /// Create a new test progress object, used for a worker thread to report progress through user state parameter.
+        /// </summary>
+        /// <param name="testsComplete">Number of tests completed.</param>
+        /// <param name="testsToDo">Number of tests still required to complete.</param>
+        /// <param name="averageTestDuration">Average duration of tests completed thus far.</param>
         public TestProgress(int testsComplete, int testsToDo, TimeSpan averageTestDuration)
         {
             this.testsComplete = testsComplete;
@@ -266,14 +319,29 @@ namespace Pathfinder
             this.percComplete = (int)((float)100 / (float)testsToDo) * testsComplete;
         }
 
-        private int testsComplete;
-        private int testsToDo;
-        private int percComplete;
-        private TimeSpan averageTestDuration;
+        private int testsComplete; /* The number of tests completed */
+        private int testsToDo; /* The number of tests still to do */
+        private int percComplete; /* The percentage of tests completed thus far */
+        private TimeSpan averageTestDuration; /* The current average test duration. */
 
+        /// <summary>
+        /// Retrieve the number of tests completed.
+        /// </summary>
         public int TestsComplete { get { return testsComplete; } }
+
+        /// <summary>
+        /// Retrieve the numebr of tests that need completing.
+        /// </summary>
         public int TestsToDo { get { return testsToDo; } }
+
+        /// <summary>
+        /// Return the current percentage of tests that have been completed.
+        /// </summary>
         public int PercentComplete { get { return percComplete; } }
+
+        /// <summary>
+        /// Return the current average duration of tests in milliseconds.
+        /// </summary>
         public TimeSpan AverageTestDuration { get { return averageTestDuration; } }
     }
 }

@@ -1,3 +1,13 @@
+/*
+ * File: LevelHandler.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a game component that manages a level.
+ * */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +119,9 @@ namespace Pathfinder
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        /// Draw the heads up display.
+        /// </summary>
         private void DrawHUD()
         {
             spriteBatch.Begin();
@@ -143,7 +156,7 @@ namespace Pathfinder
                 {
                     if (MessageBox.Show("Return to the menu?", "Return to Menu", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        Main.SetState(typeof(Menu));
+                        Main.SetState(typeof(ProfilerMenu));
                         SetBotPosition(new Coord2(0, 0));
                         SetPlayerPosition(new Coord2(1, 0));
                     }
@@ -239,7 +252,14 @@ namespace Pathfinder
             level.Map.pathfinder.Clear();
         }
 
+        /// <summary>
+        /// Retrieve the currently loaded level in this level handler.
+        /// </summary>
         public static Level Level { get { return level; } }
+
+        /// <summary>
+        /// Retrieve the size of the grid of the map loaded in this level handler.
+        /// </summary>
         public static int MapGridSize { get { return level.Map.GridSize; } }
     }
 }

@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * File: FormUtil.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a class containing some utility functions for manipulating windows forms.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

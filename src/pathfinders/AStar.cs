@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: AStar.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a class that employs the AStar pathfinding algorithm.
+ * */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +19,26 @@ using System.IO;
 
 namespace Pathfinder
 {
+    /// <summary>
+    /// A class that uses the AStar pathfinding algorithm to find a path between two given points.
+    /// </summary>
     class AStar : Dijkstra
     {
+        /// <summary>
+        /// Create a new AStar pathfinder object.
+        /// </summary>
+        /// <param name="gridSize">The size of the grid being used.</param>
+        /// <param name="map">The map object being used.</param>
         public AStar(int gridSize, Map map) : base(gridSize, map)
         {
             Name = "A Star";
         }
 
+        /// <summary>
+        /// Recalcualtes the costs in a set of neighbours based upon the given parent node.
+        /// </summary>
+        /// <param name="neighbours">The neighbours to recalculate costs for.</param>
+        /// <param name="node">The parent node to use.</param>
         protected override void RecalculateCosts(List<Node> neighbours, Node node)
         {
             for (int i = 0; i < neighbours.Count; i++)
@@ -44,6 +66,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Finds the node with the lowest cost.
+        /// </summary>
         protected override void FindLowestCost()
         {
             currentLowest = target;
@@ -60,6 +85,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Finds the manhattan distance between two locations.
+        /// </summary>
         protected int manhattanDist(Coord2 playerPos, Coord2 currentPos)
         {
             Coord2 dist = playerPos - currentPos;

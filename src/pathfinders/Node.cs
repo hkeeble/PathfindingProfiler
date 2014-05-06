@@ -1,10 +1,22 @@
-﻿using System;
+﻿/*
+ * File: Node.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a class that represents an individual node in a pathfinder, and a collection class used to manage nodes.
+ * */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Pathfinder
 {
+    /// <summary>
+    /// Represents an individual node within a pathfinder.
+    /// </summary>
     public class Node
     {
         public Coord2 position;
@@ -24,17 +36,28 @@ namespace Pathfinder
             position = new Coord2(-1, -1);
         }
 
+        /// <summary>
+        /// Create a new node.
+        /// </summary>
+        /// <param name="location">The coordinate of the node.</param>
         public Node(Coord2 location) : this()
         {
             this.position = location;
         }
     }
 
+    /// <summary>
+    /// Represents a collection of nodes.
+    /// </summary>
     class NodeCollection
     {
         private Node[,] nodes;
         private int gridSize;
 
+        /// <summary>
+        /// Create a new collection of nodes.
+        /// </summary>
+        /// <param name="gridSize">The size of the node grid.</param>
         public NodeCollection(int gridSize)
         {
             nodes = new Node[gridSize, gridSize];
@@ -44,6 +67,9 @@ namespace Pathfinder
                     nodes[x, y] = new Node(new Coord2(x, y));
         }
 
+        /// <summary>
+        /// Check if the given location is a valid one within this node collection.
+        /// </summary>
         public bool IsValid(Coord2 loc)
         {
             if (loc.X < 0) return false;
@@ -53,6 +79,9 @@ namespace Pathfinder
             else return true;
         }
 
+        /// <summary>
+        /// Check if the given location is a valid one within this node collection.
+        /// </summary>
         public bool IsValid(int x, int y)
         {
             if (x < 0) return false;
@@ -62,6 +91,9 @@ namespace Pathfinder
             else return true;
         }
 
+        /// <summary>
+        /// Retrieve the node at the given location, if it is valid.
+        /// </summary>
         public Node Get(Coord2 loc)
         {
             if(IsValid(loc))
@@ -73,6 +105,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Retrieve the node at the given location, if it is valid.
+        /// </summary>
         public Node Get(int x, int y)
         {
             if(IsValid(x, y))
@@ -84,6 +119,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Clears the current node collection.
+        /// </summary>
         public void Clear()
         {
             for (int x = 0; x < nodes.GetLength(0); x++)

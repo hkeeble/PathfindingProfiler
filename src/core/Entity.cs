@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * File: Entity.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines an abstract base class used for entities within game space.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +17,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pathfinder
 {
-    /* Represents an entity within game space */
+    /// <summary>
+    /// Represents an entity within game space.
+    /// </summary>
     abstract class Entity
     {
         protected Texture2D texture;

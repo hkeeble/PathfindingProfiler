@@ -168,6 +168,8 @@
             this.Name = "ConfigTest";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configure Test";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConfigTest_FormClosed);
+            this.Load += new System.EventHandler(this.ConfigTest_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNOfRuns)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDist)).EndInit();
             this.ResumeLayout(false);

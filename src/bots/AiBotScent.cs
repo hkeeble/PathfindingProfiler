@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * File: AiBotScent.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a bot able to follow a scent map path.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

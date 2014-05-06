@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: TestWorker.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a background worker thread used to run tests on the algorithms.
+ * */
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -72,24 +81,36 @@ namespace Pathfinder
                     results.Add(result);
 
                     // Report the thread's current progress
-                    ReportProgress((int)(((float)100/(float)config.NumberOfTestRuns)*(i+1)), new TestProgress(i+1, config.NumberOfTestRuns,
+                    ReportProgress((int)(((float)100 / (float)config.NumberOfTestRuns) * (i + 1)), new TestProgress(i + 1, config.NumberOfTestRuns,
                         new TimeSpan(results.AverageTicksForPath)));
                 }
                 else
+                {
+                    results.Cancel();
                     break;
+                }
             }
         }
 
+        /// <summary>
+        /// Check if user has cancelled the tests.
+        /// </summary>
         private static bool CheckCancellation()
         {
             return cancel;
         }
 
+        /// <summary>
+        /// User has cancelled the tests.
+        /// </summary>
         public static void Cancel()
         {
             cancel = true;
         }
 
+        /// <summary>
+        /// Thread completion event.
+        /// </summary>
         protected override void OnRunWorkerCompleted(RunWorkerCompletedEventArgs e)
         {
  	        base.OnRunWorkerCompleted(e);

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * File: Level.cs
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a level within the profiler, consisting of a map, player and bot.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +16,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pathfinder
 {
+    /// <summary>
+    /// Represents a level.
+    /// </summary>
     class Level
     {
         private Map map;

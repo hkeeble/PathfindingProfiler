@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * File: Pathfinder.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines an abstract pathfinder such that the program can make use of polymorphism for clearer code.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

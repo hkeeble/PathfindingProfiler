@@ -79,6 +79,9 @@ namespace Pathfinder
             return valid;
         }
 
+        /// <summary>
+        /// Run button click event function. This function initializes the tests, and shows the testing window dialog.
+        /// </summary>
         private void buttonRun_Click(object sender, EventArgs e)
         {
             if (ValidateInput())
@@ -100,8 +103,8 @@ namespace Pathfinder
                                                 LevelHandler.Level.Map.Name);
 
                 // Run Tests...
-                TestRun test = new TestRun();
-                test.Run(config);
+                TestRun test = new TestRun(config);
+                test.ShowDialog();
                 this.Close();
             }
         }
@@ -111,6 +114,16 @@ namespace Pathfinder
             // Prevent letters
             if (Char.IsLetter(e.KeyChar))
                 e.Handled = true;
+        }
+
+        private void ConfigTest_Load(object sender, EventArgs e)
+        {
+            ProfilerMenu.configTestActive = true;
+        }
+
+        private void ConfigTest_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ProfilerMenu.configTestActive = false;
         }
     }
 }

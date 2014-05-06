@@ -1,3 +1,12 @@
+/*
+ * File: Line.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a component used to update and handle user input.
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * File: AiBotBase.cs
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines an abstract bot.
+ * */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;

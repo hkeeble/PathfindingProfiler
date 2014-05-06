@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: TestRun.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines the form showing test progress to the user, and runs the test thread upon opening.
+ * */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,19 +30,28 @@ namespace Pathfinder
         const int ITERATIONS_PER_ESTIMATION = 20;
         int currentIterations;
 
-        public TestRun()
+        TestConfig config;
+
+        public TestRun(TestConfig config)
         {
             InitializeComponent();
+            this.config = config; 
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            Run();
+            base.OnShown(e);
         }
 
         /// <summary>
         /// Runs the test and shows the progress window.
         /// </summary>
         /// <param name="config">The testing configuration to use.</param>
-        public void Run(TestConfig config)
+        public void Run()
         {
-            // Show as a dialog
-            this.Show();
+            // Ensure the menu operations cease when tests are running
+            ProfilerMenu.testActive = true;
 
             // Initialize progress bar
             progressBarTests.Maximum = 100;
@@ -74,7 +92,6 @@ namespace Pathfinder
             TestWorker wrkr = sender as TestWorker;
             TestProgress progress = (TestProgress)args.UserState;
 
-
             EstimateTimeRemaining(progress);
 
             percLabel.Text = Convert.ToString(args.ProgressPercentage) + "%" + " (" + progress.TestsComplete + "/" + progress.TestsToDo + ")";
@@ -110,8 +127,6 @@ namespace Pathfinder
         {
             e.Config.SetEndTime(DateTime.Now);
 
-            progressBarTests.Value = progressBarTests.Maximum;
-            percLabel.Text = "100%";
             this.Refresh();
 
             if (e.Results.Count == e.Config.NumberOfTestRuns)
@@ -119,8 +134,13 @@ namespace Pathfinder
                 MessageBox.Show("Test completed!", "Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OutputResults(e.Results, e.Config);
             }
+            else if(e.Results.Cancelled)
+                MessageBox.Show("Tests cancelled.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("Test worker exited unexpectedly!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // Turn test flag off in profiler menu
+            ProfilerMenu.testActive = false;
 
             this.Close();
         }

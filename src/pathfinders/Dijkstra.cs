@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: Dijkstra.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a class that employs the Dijkstra pathfinding algorithm.
+ * */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +44,11 @@ namespace Pathfinder
         // Lines drawn to connect nodes within the path
         List<Line> pathConnectors;
 
+        /// <summary>
+        /// Create a new Dijkstra pathfinding object.
+        /// </summary>
+        /// <param name="gridSize">The size of the grid being searched for paths.</param>
+        /// <param name="map">The map being used.</param>
         public Dijkstra(int gridSize, Map map)
         {
             Name = "Dijkstra";
@@ -50,6 +64,12 @@ namespace Pathfinder
             return Name;
         }
 
+        /// <summary>
+        /// Builds a new path between two given locations.
+        /// </summary>
+        /// <param name="startPos">The starting position.</param>
+        /// <param name="targetPos">The target position.</param>
+        /// <param name="testMode">Whether or not the algorithm is being run in testing mode, or if it is live within a map visualization.</param>
         public override void Build(Coord2 startPos, Coord2 targetPos, bool testMode = false)
         {
             path = new List<Coord2>();
@@ -96,6 +116,9 @@ namespace Pathfinder
                 TracePath();
         }
 
+        /// <summary>
+        /// Get the valid neighbour locations for the given node.
+        /// </summary>
         protected virtual List<Node> GetNeighours(Node node)
         {
             List<Node> list = new List<Node>();
@@ -145,6 +168,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Find the node with the lowest cost.
+        /// </summary>
         protected virtual void FindLowestCost()
         {
             currentLowest = target;
@@ -161,6 +187,11 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Recalcualtes the costs in a set of neighbours based upon the given parent node.
+        /// </summary>
+        /// <param name="neighbours">The neighbours to recalculate costs for.</param>
+        /// <param name="node">The parent node to use.</param>
         protected virtual void RecalculateCosts(List<Node> neighbours, Node node)
         {
             for (int i = 0; i < neighbours.Count; i++)
@@ -185,6 +216,9 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// Trace the path back.
+        /// </summary>
         protected void TracePath()
         {
             bool done = false;
@@ -223,11 +257,17 @@ namespace Pathfinder
             }
         }
 
+        /// <summary>
+        /// The number of nodes that has been searched in the last call to build.
+        /// </summary>
         public override int NodesSearched()
         {
             return searchedNodes;
         }
 
+        /// <summary>
+        /// Render the path if one has been found.
+        /// </summary>
         public override void DrawPath(SpriteBatch sb)
         {
             if(pathConnectors.Count > 0)
@@ -235,13 +275,22 @@ namespace Pathfinder
                     l.Draw(sb);
         }
 
+        /// <summary>
+        /// Retrieve whether or not a given coordinate is contained within the currently generated path.
+        /// </summary>
         public override bool IsInPath(int x, int y)
         {
             return path.Contains(new Coord2(x, y));
         }
 
+        /// <summary>
+        /// Get a list of the coordinates currently in the path.
+        /// </summary>
         public List<Coord2> Path { get { return path; } }
 
+        /// <summary>
+        /// Clear all pathfinding data in this object.
+        /// </summary>
         public override void Clear()
         {
             path.Clear();
@@ -249,16 +298,25 @@ namespace Pathfinder
             pathConnectors.Clear();
         }
 
+        /// <summary>
+        /// Retrieve whether or not the given location has been closed in the current path search.
+        /// </summary>
         public override bool IsClosed(int x, int y)
         {
             return nodes.Get(x, y).closed;
         }
 
+        /// <summary>
+        /// Retrieve whether or not the given location has been closed in the current path search.
+        /// </summary>
         public override bool IsClosed(Coord2 coord)
         {
             return nodes.Get(coord.X, coord.Y).closed;
         }
 
+        /// <summary>
+        /// Get a list of the coordinates currently in the path.
+        /// </summary>
         public override List<Coord2> GetPath()
         {
             return path;

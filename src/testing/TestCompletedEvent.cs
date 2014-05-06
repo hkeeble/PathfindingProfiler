@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: TestCompletedEvent.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines an event handler used when a test is completed.
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

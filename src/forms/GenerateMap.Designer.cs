@@ -158,6 +158,8 @@
             this.Name = "GenerateMap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Generate Map";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GenerateMap_FormClosed);
+            this.Load += new System.EventHandler(this.GenerateMap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPercBlocked)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGridSize)).EndInit();
             this.ResumeLayout(false);

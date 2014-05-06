@@ -1,8 +1,6 @@
 ﻿/*
  * File: Tile.cs
  * 
- * Author: Henri Keeble
- * 
  * Program: Pathfinding Profiler
  * 
  * Desc: Declares and defines a tile classed used by the map.

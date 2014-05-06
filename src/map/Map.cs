@@ -1,4 +1,10 @@
-﻿
+﻿/*
+ * File: Map.cs
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines a map loaded from an ASCII text file.
+ * */
 using System;
 using System.Collections.Generic;
 using System.Linq;

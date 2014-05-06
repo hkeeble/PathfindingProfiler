@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * File: GenerateMap.cs
+ * 
+ * Author: Henri Keeble
+ * 
+ * Program: Pathfinding Profiler
+ * 
+ * Desc: Declares and defines the form used to generate and output random maps.
+ * */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,6 +31,9 @@ namespace Pathfinder
             this.Close();
         }
 
+        /// <summary>
+        /// Generate button event. Generates a new map based on the given inputs, and outputs the resulting map to a file.
+        /// </summary>
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
             string errMsg = "";
@@ -88,6 +100,22 @@ namespace Pathfinder
             }
             else
                 MessageBox.Show("Invalid input: \n" + errMsg, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Flags the map as open in the profiler menu, to help with emulation of modal windowing system.
+        /// </summary>
+        private void GenerateMap_Load(object sender, EventArgs e)
+        {
+            ProfilerMenu.mapGenActive = true;
+        }
+
+        /// <summary>
+        /// Flags the map as closed in the profiler menu, to help with emulation of modal windowing system.
+        /// </summary>
+        private void GenerateMap_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ProfilerMenu.mapGenActive = false;
         }
     }
 }
